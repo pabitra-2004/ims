@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Product;
+namespace App\Livewire\Products;
 
 use App\Models\Product;
 use Livewire\Component;
@@ -16,6 +16,6 @@ class ProductList extends Component
 
     public function render()
     {
-        return view('livewire.product.product-list', ['products' => Product::paginate(10)]);
+        return view('livewire.products.product-list', ['products' => Product::paginate(10)]);
     }
 }
