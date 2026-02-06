@@ -3,12 +3,17 @@
 namespace App\Livewire;
 
 use App\Models\Category;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class CategoryList extends Component
 {
     use WithPagination;
+
+    #[On('category-created')]
+    public function updateCategoryList() {}
+
 
     public function toggleActiveInactive(Category $category)
     {

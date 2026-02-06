@@ -9,12 +9,15 @@
 
             {{-- actions --}}
             <div class="justify-self-end">
-                <flux:button variant="primary" color="indigo" icon="plus">Add Category</flux:button>
+                <flux:modal.trigger name="create-category">
+                    <flux:button variant="primary" color="indigo" icon="plus">Add Category</flux:button>
+                </flux:modal.trigger>
             </div>
         </div>
         <flux:separator variant="subtle" class="mt-4" />
     </div>
 
+    <livewire:create-category />
     <livewire:category-list />
 
 </x-layouts::app>

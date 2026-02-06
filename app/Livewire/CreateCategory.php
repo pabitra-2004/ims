@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\Category;
+use Illuminate\Support\Str;
+use Livewire\Component;
+
+class CreateCategory extends Component
+{
+    public $name;
+    public $slug;
+    public $description;
+
+    public function saveCategory()
+    {
+        $category = new Category();
+        $category->name = $this->name;
+        $category->slug = $this->slug ?? Str::slug($this->name);
+        $category->description = $this->description;
+        $category->save();
+
+        $this->dispatch('category-created');
+
+        $this->modal('create-category')->close();
+        $this->reset(['name', 'slug', 'description']);
+    }
+
+    public function render()
+    {
+        return view('livewire.create-category');
+    }
+}
