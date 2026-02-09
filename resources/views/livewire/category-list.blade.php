@@ -43,7 +43,9 @@
                             </flux:button>
 
                             <flux:menu>
-                                <flux:menu.item icon="pencil-square">Edit</flux:menu.item>
+                                <flux:menu.item icon="pencil-square"
+                                    wire:click="$dispatch('edit-category', '{{ $category->id }}')">Edit
+                                </flux:menu.item>
                                 <flux:menu.item icon="trash" variant="danger"
                                     wire:click="deleteCategory({{ $category->id }})"
                                     wire:confirm="Are you sure you want to delete this category?">Delete

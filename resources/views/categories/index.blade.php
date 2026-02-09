@@ -18,6 +18,7 @@
     </div>
 
     <livewire:create-category />
+    <livewire:edit-category />
     <livewire:category-list />
 
 </x-layouts::app>

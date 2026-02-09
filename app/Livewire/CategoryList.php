@@ -12,6 +12,7 @@ class CategoryList extends Component
     use WithPagination;
 
     #[On('category-created')]
+    #[On('category-updated')]
     public function updateCategoryList() {}
 
 
