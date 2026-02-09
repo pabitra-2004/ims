@@ -14,7 +14,7 @@ class CreateCategory extends Component
 
     public function updatedName()
     {
-        $this->slug = Str::slug($this->name);
+        $this->slug = $this->slug ?? Str::slug($this->name);
     }
 
     public function saveCategory()
@@ -27,7 +27,7 @@ class CreateCategory extends Component
 
         $category = new Category();
         $category->name = $this->name;
-        $category->slug = $this->slug ?? Str::slug($this->name);
+        $category->slug = $this->slug;
         $category->description = $this->description;
         $category->save();
 
