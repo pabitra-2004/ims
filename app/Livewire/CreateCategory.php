@@ -12,8 +12,19 @@ class CreateCategory extends Component
     public $slug;
     public $description;
 
+    public function updatedName()
+    {
+        $this->slug = Str::slug($this->name);
+    }
+
     public function saveCategory()
     {
+        $this->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:categories,slug',
+            'description' => 'nullable|string',
+        ]);
+
         $category = new Category();
         $category->name = $this->name;
         $category->slug = $this->slug ?? Str::slug($this->name);

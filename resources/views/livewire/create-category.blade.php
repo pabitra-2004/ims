@@ -7,9 +7,10 @@
                 <flux:text class="mt-2">Enter details to add a new category.</flux:text>
             </div>
 
-            <flux:input wire:model='name' label="Name" placeholder="Category Name" badge="Required" required />
+            <flux:input wire:model.blur.live='name' label="Name" placeholder="Category Name" badge="Required" required />
 
-            <flux:input wire:model='slug' label="Slug" placeholder="Slug" badge="Optional" />
+            <flux:input wire:model='slug' label="Slug" placeholder="Slug" badge="Optional"
+                description="eg: water-bottle" />
 
             <flux:textarea wire:model='description' label="Description" placeholder="Enter description here."
                 badge="Optional" />

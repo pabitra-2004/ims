@@ -29,7 +29,8 @@ class CategoryList extends Component
     public function render()
     {
         return view('livewire.category-list', [
-            'categories' => Category::paginate(10),
+            'categories' => Category::latest()
+                ->paginate(10),
         ]);
     }
 }
