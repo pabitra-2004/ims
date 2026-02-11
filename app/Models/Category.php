@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,5 +33,14 @@ class Category extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Scope a query to search categoties by name.
+     */
+    #[Scope]
+    protected function search(Builder $query, $search): void
+    {
+        $query->whereLike('name', "%{$search}%");
     }
 }

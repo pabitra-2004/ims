@@ -11,6 +11,8 @@ class CategoryList extends Component
 {
     use WithPagination;
 
+    public $search = '';
+
     #[On('category-created')]
     #[On('category-updated')]
     public function updateCategoryList() {}
@@ -30,7 +32,8 @@ class CategoryList extends Component
     public function render()
     {
         return view('livewire.category-list', [
-            'categories' => Category::latest()
+            'categories' => Category::search($this->search)
+                ->latest()
                 ->paginate(10),
         ]);
     }

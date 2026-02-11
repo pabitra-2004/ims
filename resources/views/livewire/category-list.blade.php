@@ -1,4 +1,12 @@
 <div>
+    <div class="grid grid-cols-2 gap-4 items-center mb-6">
+        <div></div>
+        <div class="justify-self-end-safe">
+            <flux:input icon="magnifying-glass" wire:model.live.debounce.300ms='search' placeholder="Search Categories..."
+                clearable class="max-w-xs" />
+        </div>
+    </div>
+
     <flux:table :paginate="$categories">
         <flux:table.columns>
             <flux:table.column>#</flux:table.column>
@@ -11,16 +19,17 @@
         <flux:table.rows>
             @foreach ($categories as $category)
                 <flux:table.row :key="$category->id">
-                    <flux:table.cell variant="strong">{{ $categories->firstItem() + $loop->index }}</flux:table.cell>
+                    <flux:table.cell class="py-2!" variant="strong">{{ $categories->firstItem() + $loop->index }}
+                    </flux:table.cell>
 
-                    <flux:table.cell>
+                    <flux:table.cell class="py-2!">
                         <flux:heading class="font-semibold">{{ $category->name }}</flux:heading>
                         <flux:text class="mt-1.5 text-xs">{{ $category->description }}</flux:text>
                     </flux:table.cell>
 
-                    <flux:table.cell>{{ $category->slug }}</flux:table.cell>
+                    <flux:table.cell class="py-2!">{{ $category->slug }}</flux:table.cell>
 
-                    <flux:table.cell>
+                    <flux:table.cell class="py-2!">
                         <flux:field variant="inline" wire:click="toggleActiveInactive({{ $category->id }})">
                             <flux:switch :checked="$category->is_active" />
                             <flux:label>
@@ -37,7 +46,7 @@
                         </flux:field>
                     </flux:table.cell>
 
-                    <flux:table.cell align="center">
+                    <flux:table.cell class="py-2!" align="center">
                         <flux:dropdown>
                             <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
                             </flux:button>
@@ -53,6 +62,9 @@
                             </flux:menu>
                         </flux:dropdown>
 
+                    </flux:table.cell>
+
+                    <flux:table.cell class="py-2!" align="center">
                         <flux:text class="mt-1.5 text-xs"> &#128337; {{ $category->updated_at->diffForHumans() }}
                         </flux:text>
                     </flux:table.cell>
