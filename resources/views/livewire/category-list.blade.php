@@ -1,6 +1,12 @@
 <div>
     <div class="grid grid-cols-2 gap-4 items-center mb-6">
-        <div></div>
+        <div>
+            <flux:select wire:model.change.live="quantity" class="w-fit">
+                @foreach ([5, 10, 15, 20] as $item)
+                    <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
+                @endforeach
+            </flux:select>
+        </div>
         <div class="justify-self-end-safe">
             <flux:input icon="magnifying-glass" wire:model.live.debounce.300ms='search' placeholder="Search Categories..."
                 clearable class="max-w-xs" />
