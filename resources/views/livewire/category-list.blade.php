@@ -7,9 +7,25 @@
                 @endforeach
             </flux:select>
         </div>
-        <div class="justify-self-end-safe">
-            <flux:input icon="magnifying-glass" wire:model.live.debounce.300ms='search' placeholder="Search Categories..."
-                clearable class="max-w-xs" />
+        <div class="flex justify-end-safe items-center gap-4">
+            <flux:dropdown>
+                <flux:button icon:trailing="chevron-down">Filters</flux:button>
+
+                <flux:menu>
+                    <flux:menu.checkbox.group wire:model.live="filters">
+                        <flux:menu.checkbox keep-open value="active">Active
+                        </flux:menu.checkbox>
+                        <flux:menu.checkbox keep-open value="inactive">Inactive
+                        </flux:menu.checkbox>
+                    </flux:menu.checkbox.group>
+
+                    <flux:menu.separator />
+                    <flux:menu.item variant="danger" wire:click="clearFilters">Clear</flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
+
+            <flux:input icon="magnifying-glass" wire:model.live.debounce.300ms='search'
+                placeholder="Search Categories..." clearable class="max-w-xs" />
         </div>
     </div>
 

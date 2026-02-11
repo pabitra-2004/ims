@@ -43,4 +43,15 @@ class Category extends Model
     {
         $query->whereLike('name', "%{$search}%");
     }
+
+    #[Scope]
+    protected function filter(Builder $query, $filters): void
+    {
+        if ($filters) {
+            $query->whereIn('is_active', array_map(
+                fn($item) => $item === 'active' ? true : false,
+                $filters
+            ));
+        }
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Category;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,6 +14,7 @@ class CategoryList extends Component
 
     public int $quantity = 10;
     public ?string $search = '';
+    public array $filters = [];
 
     #[On('category-created')]
     #[On('category-updated')]
@@ -30,10 +32,16 @@ class CategoryList extends Component
         $category->delete();
     }
 
+    public function clearFilters()
+    {
+        $this->filters = [];
+    }
+
     public function render()
     {
         return view('livewire.category-list', [
             'categories' => Category::search($this->search)
+                ->filter($this->filters)
                 ->latest()
                 ->paginate($this->quantity),
         ]);
