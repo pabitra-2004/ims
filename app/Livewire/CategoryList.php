@@ -16,8 +16,7 @@ class CategoryList extends Component
     public ?string $search = '';
     public array $filters = [];
 
-    #[On('category-created')]
-    #[On('category-updated')]
+    #[On('category-saved')]
     public function updateCategoryList() {}
 
 

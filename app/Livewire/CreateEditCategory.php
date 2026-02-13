@@ -3,12 +3,13 @@
 namespace App\Livewire;
 
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class EditCategory extends Component
+class CreateEditCategory extends Component
 {
     #[Locked]
     public $category_id;
@@ -25,16 +26,22 @@ class EditCategory extends Component
         $this->slug = $category->slug;
         $this->description = $category->description;
 
-        $this->modal('edit-category')->show();
+        $this->modal('create-edit-category')->show();
     }
 
-    public function updateCategory()
+    public function updatedName()
     {
+        $this->slug = $this->slug ?? Str::slug($this->name);
+    }
+
+    public function saveCategory()
+    {
+        $this->slug = Str::trim($this->slug);
+
         $this->validate([
             'name' => 'required|string|max:255',
-            // 'slug' => 'nullable|string|max:255|unique:categories,slug',
             'slug' => [
-                'nullable',
+                'required',
                 'string',
                 'max:255',
                 Rule::unique('categories', 'slug')->ignore($this->category_id),
@@ -42,25 +49,31 @@ class EditCategory extends Component
             'description' => 'nullable|string',
         ]);
 
-        $category = Category::find($this->category_id);
+        // if ($this->category_id)
+        //     $category = Category::find($this->category_id);
+        // else
+        //     $category = new Category();
+
+        $category = Category::findOrNew($this->category_id);
         $category->name = $this->name;
         $category->slug = $this->slug;
         $category->description = $this->description;
         $category->save();
 
-        $this->dispatch('category-updated');
+        $this->dispatch('category-saved');
 
-        $this->modal('edit-category')->close();
-        $this->reset();
+        $this->modal('create-edit-category')->close();
+        $this->close();
     }
 
     public function close()
     {
+        $this->reset();
         $this->resetValidation();
     }
 
     public function render()
     {
-        return view('livewire.edit-category');
+        return view('livewire.create-edit-category');
     }
 }
