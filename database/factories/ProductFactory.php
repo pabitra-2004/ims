@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -18,10 +19,12 @@ class ProductFactory extends Factory
     {
         $name = $this->faker->unique()->words(2, true);
 
-        return [        
-            'code' => $this->faker->unique()->regexify('[A-Z]{3}-[A-Z]{3}-' . now()->year .'-[0-9]{3}'), // category-productName-year-number       
-            'name' => ucwords($name),         
+        return [
+            'code' => now()->timestamp . $this->faker->randomNumber(2, true),
+            'name' => ucwords($name),
+            'slug' => Str::slug($name),
             'description' => $this->faker->optional()->sentence(),
+            'is_active' => $this->faker->boolean(75),
         ];
     }
 }
