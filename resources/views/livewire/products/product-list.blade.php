@@ -1,9 +1,16 @@
 <div>
+
+
+
+
     <flux:table :paginate="$products">
         <flux:table.columns>
             <flux:table.column>#</flux:table.column>
             <flux:table.column>Code</flux:table.column>
             <flux:table.column>Name</flux:table.column>
+            <flux:table.column>Slug</flux:table.column>
+            <flux:table.column>Status</flux:table.column>
+            <flux:table.column>Last Updated</flux:table.column>
             <flux:table.column align="center">Actions</flux:table.column>
 
             <!-- ... -->
@@ -21,22 +28,46 @@
                         <flux:text class="mt-1" variant="subtle">{{ $product->description }}</flux:text>
                     </flux:table.cell>
 
-                    <flux:table.cell align="center">
-                            <flux:dropdown>
-                                <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
-                                </flux:button>
+                    <flux:table.cell>
+                        <flux:text>{{ $product->slug }}</flux:text>
+                    </flux:table.cell>
 
-                                <flux:menu>
-                                    <flux:menu.item icon="pencil-square">Edit</flux:menu.item>
-                                    <flux:menu.item icon="trash" variant="danger"
-                                        wire:click="deleteProduct({{ $product->id }})"
-                                        wire:confirm="Are you sure you want to delete this product?"
-                                        >Delete
-                                    </flux:menu.item>
-                                </flux:menu>
-                            </flux:dropdown>
-                            <flux:text class="mt-1.5 text-xs"> &#128337; {{ $product->updated_at->diffForHumans() }}
-                            </flux:text>
+                    <flux:table.cell>
+                        <flux:field variant="inline" wire:click="toggleActiveInactive({{ $product->id }})">
+                            <flux:switch :checked="$product->is_active" />
+                            <flux:label>
+                                @if ($product->is_active)
+                                    <flux:badge color="green" size="sm" class="w-15 items-center justify-center">
+                                        Active</flux:badge>
+                                @else
+                                    <flux:badge color="zinc" size="sm" class="w-15 items-center justify-center">
+                                        Inactive</flux:badge>
+                                @endif
+                            </flux:label>
+                        </flux:field>
+                    </flux:table.cell>
+
+                    <flux:table.cell>
+                        <flux:text class="mt-1.5 text-xs"> &#128337; {{ $product->updated_at->diffForHumans() }}
+                        </flux:text>
+                    </flux:table.cell>
+
+                    <flux:table.cell align="center">
+                        <flux:dropdown>
+                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
+                            </flux:button>
+
+                            <flux:menu>
+
+                                <flux:menu.item wire:click="$dispatch('edit-product', '{{ $product->id }}' )"
+                                    icon="pencil-square">Edit</flux:menu.item>
+
+                                <flux:menu.item icon="trash" variant="danger"
+                                    wire:click="deleteProduct({{ $product->id }})"
+                                    wire:confirm="Are you sure you want to delete this product?">Delete
+                                </flux:menu.item>
+                            </flux:menu>
+                        </flux:dropdown>
                     </flux:table.cell>
                     <!-- ... -->
                 </flux:table.row>

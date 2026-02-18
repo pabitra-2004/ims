@@ -9,12 +9,18 @@
 
             {{-- actions --}}
             <div class="justify-self-end">
-                <flux:button variant="primary" color="indigo" icon="plus">Add Products</flux:button>
+                <flux:modal.trigger name="create-edit-product">
+                    <flux:button variant="primary" color="indigo" icon="plus">Add Products</flux:button>
+                </flux:modal.trigger>
             </div>
         </div>
         <flux:separator variant="subtle" class="mt-4" />
     </div>
+    
+
+    <livewire:products.create-edit-product />
 
     <livewire:products.product-list />
+    
 
 </x-layouts::app>
