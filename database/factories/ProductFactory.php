@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -17,10 +18,12 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $category_ids = Category::pluck('id')->toArray();
         $name = $this->faker->unique()->words(2, true);
 
         return [
-            'code' => now()->timestamp . $this->faker->randomNumber(2, true),
+            'category_id' => $this->faker->randomElement($category_ids),
+            'code' => strtoupper(Str::random(6)),
             'name' => ucwords($name),
             'slug' => Str::slug($name),
             'description' => $this->faker->optional()->sentence(),
