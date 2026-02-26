@@ -13,22 +13,30 @@ class ProductList extends Component
 
     public int $quantity = 10;
 
+    public ?string $search = '';
 
     #[On('product-saved')]
-    public function updateProductList(){}
+    public function updateProductList() {}
 
     public function toggleActiveInactive(Product $product)
     {
-        $product->is_active = !$product->is_active;
+        $product->is_active = ! $product->is_active;
         $product->save();
     }
 
-    public function deleteProduct(Product $product){
+    public function deleteProduct(Product $product)
+    {
         $product->delete();
     }
 
     public function render()
     {
-        return view('livewire.products.product-list', ['products' => Product::with('category:id,name')->latest()->paginate($this->quantity)]);
+        return view('livewire.products.product-list',
+            ['products' => Product::with('category:id,name')
+                ->search($this->search)
+                ->latest('updated_at')
+                ->paginate($this->quantity),
+            ]
+        );
     }
 }

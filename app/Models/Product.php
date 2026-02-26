@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +34,19 @@ class Product extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Scope a query to search products by code, name and slug.
+     */
+    #[Scope]
+    protected function search(Builder $query, $search)
+    {
+        if ($search) {
+            $query->whereLike('code', "%{$search}%")
+                ->orWhereLike('name', "%{$search}%")
+                ->orWhereLike('slug', "%{$search}%");
+        }
     }
 
     public function category(): BelongsTo
