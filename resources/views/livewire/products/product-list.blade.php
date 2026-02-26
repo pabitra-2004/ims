@@ -1,19 +1,14 @@
 <div>
-
-
-
-
     <flux:table :paginate="$products">
         <flux:table.columns>
             <flux:table.column>#</flux:table.column>
             <flux:table.column>Code</flux:table.column>
             <flux:table.column>Name</flux:table.column>
             <flux:table.column>Slug</flux:table.column>
+            <flux:table.column>Category</flux:table.column>
             <flux:table.column>Status</flux:table.column>
             <flux:table.column>Last Updated</flux:table.column>
             <flux:table.column align="center">Actions</flux:table.column>
-
-            <!-- ... -->
         </flux:table.columns>
 
         <flux:table.rows>
@@ -27,10 +22,15 @@
                         <flux:heading level="3">{{ $product->name }}</flux:heading>
                         <flux:text class="mt-1" variant="subtle">{{ $product->description }}</flux:text>
                     </flux:table.cell>
-
+                    
                     <flux:table.cell>
                         <flux:text>{{ $product->slug }}</flux:text>
                     </flux:table.cell>
+
+                    <flux:table.cell>
+                        <flux:text>{{ $product->category->name }}</flux:text>
+                    </flux:table.cell>
+
 
                     <flux:table.cell>
                         <flux:field variant="inline" wire:click="toggleActiveInactive({{ $product->id }})">

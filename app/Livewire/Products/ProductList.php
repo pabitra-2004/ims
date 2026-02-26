@@ -27,6 +27,6 @@ class ProductList extends Component
 
     public function render()
     {
-        return view('livewire.products.product-list', ['products' => Product::latest()->paginate(10)]);
+        return view('livewire.products.product-list', ['products' => Product::with('category:id,name')->latest()->paginate(10)]);
     }
 }
