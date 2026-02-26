@@ -1,4 +1,14 @@
 <div>
+    <div class="grid grid-col-2 gap-4 items-center mb-4">
+        <div>
+            <flux:select wire:model.change.live="quantity" class="w-fit">
+                @foreach ([5, 10, 15, 20] as $item)
+                    <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
+                @endforeach
+            </flux:select>
+        </div>
+    </div>
+
     <flux:table :paginate="$products">
         <flux:table.columns>
             <flux:table.column>#</flux:table.column>
@@ -22,7 +32,7 @@
                         <flux:heading level="3">{{ $product->name }}</flux:heading>
                         <flux:text class="mt-1" variant="subtle">{{ $product->description }}</flux:text>
                     </flux:table.cell>
-                    
+
                     <flux:table.cell>
                         <flux:text>{{ $product->slug }}</flux:text>
                     </flux:table.cell>

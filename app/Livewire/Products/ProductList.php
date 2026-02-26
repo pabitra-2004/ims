@@ -11,9 +11,11 @@ class ProductList extends Component
 {
     use WithPagination;
 
+    public int $quantity = 10;
+
+
     #[On('product-saved')]
     public function updateProductList(){}
-
 
     public function toggleActiveInactive(Product $product)
     {
@@ -27,6 +29,6 @@ class ProductList extends Component
 
     public function render()
     {
-        return view('livewire.products.product-list', ['products' => Product::with('category:id,name')->latest()->paginate(10)]);
+        return view('livewire.products.product-list', ['products' => Product::with('category:id,name')->latest()->paginate($this->quantity)]);
     }
 }
