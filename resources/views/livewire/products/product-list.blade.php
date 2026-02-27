@@ -14,23 +14,24 @@
 
                 <flux:menu>
                     <flux:menu.submenu heading="Status">
-                        <flux:menu.checkbox.group wire:model.live="status_filters">
+                        <flux:menu.checkbox.group wire:model.live="filters.status">
                             <flux:menu.checkbox keep-open value="active">Active</flux:menu.checkbox>
                             <flux:menu.checkbox keep-open value="inactive">Inactive</flux:menu.checkbox>
                         </flux:menu.checkbox.group>
                         <flux:menu.separator />
-                        <flux:menu.item variant="danger" wire:click="clearStatusFilters">Clear</flux:menu.item>
+                        <flux:menu.item variant="danger" wire:click="clearFilters('status')">Clear</flux:menu.item>
                     </flux:menu.submenu>
 
                     <flux:menu.submenu heading="Category">
-                        <flux:menu.checkbox.group wire:model.live="category_filters">
+                        <flux:menu.checkbox.group wire:model.live="filters.categories">
                             @foreach ($categories as $index => $category)
-                                <flux:menu.checkbox keep-open value="{{ $index }}">{{ $category }}</flux:menu.checkbox>
+                                <flux:menu.checkbox keep-open value="{{ $index }}">{{ $category }}
+                                </flux:menu.checkbox>
                             @endforeach
                         </flux:menu.checkbox.group>
 
                         <flux:menu.separator />
-                        <flux:menu.checkbox wire:click="clearCategoryFilters">Clear</flux:menu.checkbox>
+                        <flux:menu.checkbox wire:click="clearFilters('categories')">Clear</flux:menu.checkbox>
                     </flux:menu.submenu>
 
                     <flux:menu.separator />
@@ -47,11 +48,13 @@
         <flux:table.columns>
             <flux:table.column>#</flux:table.column>
             <flux:table.column>Code</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
+                wire:click="sort('name')">Name</flux:table.column>
             <flux:table.column>Slug</flux:table.column>
             <flux:table.column>Category</flux:table.column>
             <flux:table.column>Status</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'updated_at'" :direction="$sortDirection" wire:click="sort('updated_at')">Last Updated</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'updated_at'" :direction="$sortDirection"
+                wire:click="sort('updated_at')">Last Updated</flux:table.column>
             <flux:table.column align="center">Actions</flux:table.column>
         </flux:table.columns>
 

@@ -13,17 +13,15 @@ class ProductList extends Component
     use WithPagination;
 
     public int $quantity = 10;
-
     public ?string $search = '';
-
-    public ?array $status_filters = [];
-
-    public array $categories = [];
-    public ?array $category_filters = [];
-
-
+    public ?array $filters = [
+        'status' => [],
+        'categories' => [],
+    ];
     public $sortBy = 'updated_at';
     public $sortDirection = 'desc';
+
+    public array $categories = [];
 
     public function mount()
     {
@@ -44,23 +42,17 @@ class ProductList extends Component
         $product->delete();
     }
 
-    public function clearFilters()
+    public function clearFilters($key = null)
     {
-        $this->clearStatusFilters();
-        $this->clearCategoryFilters();
+        if ($key) {
+            $this->filters[$key] = [];
+        } else {
+            $this->reset('filters');
+        }
     }
 
-    public function clearStatusFilters()
+    public function sort($column)
     {
-        $this->status_filters = [];
-    }
-
-    public function clearCategoryFilters()
-    {
-        $this->category_filters = [];
-    }
-
-    public function sort($column) {
         if ($this->sortBy === $column) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
@@ -71,13 +63,14 @@ class ProductList extends Component
 
     public function render()
     {
-        return view('livewire.products.product-list',
-            ['products' => Product::with('category:id,name')
-                ->search($this->search)
-                ->statusfilter($this->status_filters)
-                ->categoryfilter($this->category_filters)
-                ->orderBy($this->sortBy, $this->sortDirection)
-                ->paginate($this->quantity),
+        return view(
+            'livewire.products.product-list',
+            [
+                'products' => Product::with('category:id,name')
+                    ->search($this->search)
+                    ->filter($this->filters)
+                    ->orderBy($this->sortBy, $this->sortDirection)
+                    ->paginate($this->quantity),
             ]
         );
     }
