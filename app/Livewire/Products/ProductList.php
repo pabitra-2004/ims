@@ -21,6 +21,10 @@ class ProductList extends Component
     public array $categories = [];
     public ?array $category_filters = [];
 
+
+    public $sortBy = 'updated_at';
+    public $sortDirection = 'desc';
+
     public function mount()
     {
         $this->categories = Category::orderBy('name')->pluck('name', 'id')->toArray();
@@ -56,6 +60,15 @@ class ProductList extends Component
         $this->category_filters = [];
     }
 
+    public function sort($column) {
+        if ($this->sortBy === $column) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $column;
+            $this->sortDirection = 'asc';
+        }
+    }
+
     public function render()
     {
         return view('livewire.products.product-list',
@@ -63,7 +76,7 @@ class ProductList extends Component
                 ->search($this->search)
                 ->statusfilter($this->status_filters)
                 ->categoryfilter($this->category_filters)
-                ->latest('updated_at')
+                ->orderBy($this->sortBy, $this->sortDirection)
                 ->paginate($this->quantity),
             ]
         );

@@ -47,11 +47,11 @@
         <flux:table.columns>
             <flux:table.column>#</flux:table.column>
             <flux:table.column>Code</flux:table.column>
-            <flux:table.column>Name</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection" wire:click="sort('name')">Name</flux:table.column>
             <flux:table.column>Slug</flux:table.column>
             <flux:table.column>Category</flux:table.column>
             <flux:table.column>Status</flux:table.column>
-            <flux:table.column>Last Updated</flux:table.column>
+            <flux:table.column sortable :sorted="$sortBy === 'updated_at'" :direction="$sortDirection" wire:click="sort('updated_at')">Last Updated</flux:table.column>
             <flux:table.column align="center">Actions</flux:table.column>
         </flux:table.columns>
 
