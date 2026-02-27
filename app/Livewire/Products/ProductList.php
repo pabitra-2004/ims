@@ -40,6 +40,7 @@ class ProductList extends Component
     public function deleteProduct(Product $product)
     {
         $product->delete();
+        $this->dispatch('toast:fire', type: 'success', message: 'Product deleted successfully!');
     }
 
     public function clearFilters($key = null)
