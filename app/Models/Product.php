@@ -49,6 +49,14 @@ class Product extends Model
         }
     }
 
+    #[Scope]
+    protected function statusfilter(Builder $query, $statusfilters)
+    {
+        if ($statusfilters) {
+            $query->whereIn('is_active', array_map(fn ($item) => $item === 'active' ? true : false, $statusfilters));
+        }
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

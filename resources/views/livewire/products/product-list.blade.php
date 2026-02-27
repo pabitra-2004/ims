@@ -1,5 +1,5 @@
 <div>
-    <div class="grid grid-cols-2 gap-4 items-center mb-4">
+    <div class="grid grid-cols-2 items-center gap-4 mb-4">
         <div class="w-fit">
             <flux:select wire:model.change.live="quantity">
                 @foreach ([5, 10, 15, 20] as $item)
@@ -8,11 +8,27 @@
             </flux:select>
         </div>
 
-        <div class="flex justify-end-safe items-center">
-            <div>
-                <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search"
-                    placeholder="Search Products..." clearable class="max-w-xs" title="Search by name, code, slug"/>
-            </div>
+        <div class="flex items-center justify-end-safe gap-4 ">
+            <flux:dropdown>
+                <flux:button icon:trailing="chevron-down">Filter</flux:button>
+
+                <flux:menu>
+                    <flux:menu.submenu heading="Status">
+                        <flux:menu.checkbox.group wire:model.live="status_filters">
+                            <flux:menu.checkbox keep-open value="active">Active</flux:menu.checkbox>
+                            <flux:menu.checkbox keep-open value="inactive">Inactive</flux:menu.checkbox>
+                        </flux:menu.checkbox.group>
+                        <flux:menu.separator />
+                        <flux:menu.item variant="danger" wire:click="clearFilters">Clear</flux:menu.item>
+                    </flux:menu.submenu>
+
+                    <flux:menu.separator />
+                    <flux:menu.item variant="danger" wire:click="clearFilters">Reset Filters</flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
+
+            <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search" placeholder="Search Products..."
+                clearable class="max-w-xs" title="Search by name, code, slug" />
         </div>
     </div>
 
