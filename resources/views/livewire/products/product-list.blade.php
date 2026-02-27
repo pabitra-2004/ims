@@ -19,7 +19,18 @@
                             <flux:menu.checkbox keep-open value="inactive">Inactive</flux:menu.checkbox>
                         </flux:menu.checkbox.group>
                         <flux:menu.separator />
-                        <flux:menu.item variant="danger" wire:click="clearFilters">Clear</flux:menu.item>
+                        <flux:menu.item variant="danger" wire:click="clearStatusFilters">Clear</flux:menu.item>
+                    </flux:menu.submenu>
+
+                    <flux:menu.submenu heading="Category">
+                        <flux:menu.checkbox.group wire:model.live="category_filters">
+                            @foreach ($categories as $index => $category)
+                                <flux:menu.checkbox keep-open value="{{ $index }}">{{ $category }}</flux:menu.checkbox>
+                            @endforeach
+                        </flux:menu.checkbox.group>
+
+                        <flux:menu.separator />
+                        <flux:menu.checkbox wire:click="clearCategoryFilters">Clear</flux:menu.checkbox>
                     </flux:menu.submenu>
 
                     <flux:menu.separator />

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Products;
 
+use App\Models\Category;
 use App\Models\Product;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -15,7 +16,15 @@ class ProductList extends Component
 
     public ?string $search = '';
 
-    public $status_filters = [];
+    public ?array $status_filters = [];
+
+    public array $categories = [];
+    public ?array $category_filters = [];
+
+    public function mount()
+    {
+        $this->categories = Category::orderBy('name')->pluck('name', 'id')->toArray();
+    }
 
     #[On('product-saved')]
     public function updateProductList() {}
@@ -33,7 +42,18 @@ class ProductList extends Component
 
     public function clearFilters()
     {
+        $this->clearStatusFilters();
+        $this->clearCategoryFilters();
+    }
+
+    public function clearStatusFilters()
+    {
         $this->status_filters = [];
+    }
+
+    public function clearCategoryFilters()
+    {
+        $this->category_filters = [];
     }
 
     public function render()
@@ -42,6 +62,7 @@ class ProductList extends Component
             ['products' => Product::with('category:id,name')
                 ->search($this->search)
                 ->statusfilter($this->status_filters)
+                ->categoryfilter($this->category_filters)
                 ->latest('updated_at')
                 ->paginate($this->quantity),
             ]

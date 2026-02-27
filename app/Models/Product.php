@@ -50,10 +50,18 @@ class Product extends Model
     }
 
     #[Scope]
-    protected function statusfilter(Builder $query, $statusfilters)
+    protected function statusfilter(Builder $query, $status_filters)
     {
-        if ($statusfilters) {
-            $query->whereIn('is_active', array_map(fn ($item) => $item === 'active' ? true : false, $statusfilters));
+        if ($status_filters) {
+            $query->whereIn('is_active', array_map(fn ($item) => $item === 'active' ? true : false, $status_filters));
+        }
+    }
+
+    #[Scope]
+    protected function categoryfilter(Builder $query, $category_filters)
+    {
+        if ($category_filters) {
+            $query->whereIn('category_id', $category_filters);
         }
     }
 
