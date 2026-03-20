@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 
 document.addEventListener("livewire:init", () => {
-    Livewire.on("toast:fire", ({ type, message }) => {
+    Livewire.on("toast:fire", ({ type, message, ...config }) => {
         // console.log(type, message);
 
         Swal.fire({
@@ -16,6 +16,7 @@ document.addEventListener("livewire:init", () => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
             },
+            ...config,
         });
     });
 
