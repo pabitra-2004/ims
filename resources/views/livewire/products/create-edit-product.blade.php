@@ -9,7 +9,7 @@
                 </div>
 
                 <flux:input type="text" wire:model="code" label="Code" placeholder="Product code (e.g., 1FM2A3)"/>
-                <flux:input type="text" wire:model.blur.live="name" label="Name" placeholder="Product name" />
+                <flux:input type="text" wire:model.blur.live="name" label="Name" placeholder="Product name" autocomplete="off"/>
 
                 <flux:input type="text" wire:model="slug" label="Slug" placeholder="slug (e.g., water-bottle)"/>
 

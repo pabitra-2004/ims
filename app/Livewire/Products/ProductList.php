@@ -31,16 +31,17 @@ class ProductList extends Component
     #[On('product-saved')]
     public function updateProductList() {}
 
+    public function deleteProduct(Product $product)
+    {
+        $product->delete();
+        $this->dispatch('toast-fire', type: 'success', message: 'Product deleted successfully!');
+    }
+
     public function toggleActiveInactive(Product $product)
     {
         $product->is_active = ! $product->is_active;
         $product->save();
-    }
-
-    public function deleteProduct(Product $product)
-    {
-        $product->delete();
-        $this->dispatch('toast:fire', type: 'success', message: 'Product deleted successfully!');
+        $this->dispatch('toast-fire', type: 'success', message: 'Product status changed');
     }
 
     public function clearFilters($key = null)

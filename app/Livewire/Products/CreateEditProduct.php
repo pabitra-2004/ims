@@ -68,12 +68,16 @@ class CreateEditProduct extends Component
         $product->save();
         $this->dispatch('product-saved');
         $this->modal('create-edit-product')->close();
+
+        $message = $this->product_id ? "Product updated successfully!"  : "Product added successfully!";
+        $this->dispatch('toast-fire', type: 'success', message: $message);
+        
         $this->close();
     }
 
     public function close()
     {
-        $this->reset(['category_id', 'code', 'name', 'slug', 'description']);
+        $this->reset(['product_id', 'category_id', 'code', 'name', 'slug', 'description']);
         $this->resetValidation();
     }
 
