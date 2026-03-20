@@ -52,20 +52,23 @@
                     <flux:table.cell class="py-2!">{{ $category->slug }}</flux:table.cell>
 
                     <flux:table.cell class="py-2!">
-                        <flux:field variant="inline" wire:click="toggleActiveInactive({{ $category->id }})">
-                            <flux:switch :checked="$category->is_active" />
-                            <flux:label>
-                                @if ($category->is_active)
-                                    <flux:badge color="green" size="sm" inset="top bottom"
-                                        class="w-16 justify-center">
-                                        Active
+
+                        <label class="inline-flex items-center me-5 cursor-pointer" onclick="event.preventDefault()"
+                            wire:swal-confirm="{
+                                text: 'Are you sure you want to change the status?',
+                                action: 'toggleActiveInactive',
+                                params: [{{ $category->id }}],
+                            }">
+                            <input type="checkbox" value="" class="sr-only peer" @checked($category->is_active)>
+                            <div
+                                class="relative w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-orange-500 dark:peer-checked:bg-orange-500">
+                            </div>
+                            <flux:badge color="{{ $category->is_active ? 'green' : 'zinc' }}" size="sm"
+                                inset="top bottom" class="w-16 justify-center select-none ms-3">
+                                {{ $category->is_active ? 'Active' : 'Inactive' }}
                                     </flux:badge>
-                                @else
-                                    <flux:badge color="zinc" size="sm" inset="top bottom"
-                                        class="w-16 justify-center">Inactive</flux:badge>
-                                @endif
-                            </flux:label>
-                        </flux:field>
+                        </label>
+
                     </flux:table.cell>
 
                     <flux:table.cell class="py-2!" align="center">
@@ -78,8 +81,8 @@
                                     wire:click="$dispatch('edit-category', '{{ $category->id }}')">Edit
                                 </flux:menu.item>
                                 <flux:menu.item icon="trash" variant="danger"
-                                    wire:click="deleteCategory({{ $category->id }})"
-                                    wire:confirm="Are you sure you want to delete this category?">Delete
+                                    wire:swal-confirm="{ text: 'Are you sure you want to delete this category?', action: 'deleteCategory', params: [{{ $category->id }}]}">
+                                    Delete
                                 </flux:menu.item>
                             </flux:menu>
                         </flux:dropdown>
