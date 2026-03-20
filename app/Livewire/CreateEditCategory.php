@@ -63,6 +63,8 @@ class CreateEditCategory extends Component
         $this->dispatch('category-saved');
 
         $this->modal('create-edit-category')->close();
+        $message = $this->category_id ? 'Category updated successfully!' : 'Category added successfully!';
+        $this->dispatch('toast:fire', type: 'success', message: $message, position:'bottom-right');
         $this->close();
     }
 

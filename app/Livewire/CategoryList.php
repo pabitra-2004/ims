@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -24,11 +23,13 @@ class CategoryList extends Component
     {
         $category->is_active = !$category->is_active;
         $category->save();
+        $this->dispatch('toast-fire', type: 'success', message: 'Category status successfully changed!');
     }
 
     public function deleteCategory(Category $category)
     {
         $category->delete();
+        $this->dispatch('toast-fire', type: 'success', message: 'Category deleted successfully');
     }
 
     public function clearFilters()
