@@ -53,7 +53,7 @@ class Product extends Model
     protected function filter(Builder $query, array $filters)
     {
         if ($filters['status']) {
-            $query->where('is_active', array_map(fn($item) => $item === 'active' ? true : false, $filters['status']));
+            $query->whereIn('is_active', array_map(fn($item) => $item === 'active' ? true : false, $filters['status']));
         }
 
         if ($filters['categories']) {
@@ -61,13 +61,13 @@ class Product extends Model
         }
     }
 
-    #[Scope]
-    protected function categoryfilter(Builder $query, $category_filters)
-    {
-        if ($category_filters) {
-            $query->whereIn('category_id', $category_filters);
-        }
-    }
+
+    // #[Scope]
+    // protected function categorySearch(Builder $query, $searchCategories){
+    //     if ($searchCategories) {
+    //         $query->whereLike('name', "%{$searchCategories}%");
+    //     }
+    // }
 
     public function category(): BelongsTo
     {

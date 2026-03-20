@@ -14,18 +14,28 @@ class ProductList extends Component
 
     public int $quantity = 10;
     public ?string $search = '';
-    public ?array $filters = [
+    public string $searchCategories = '';
+    public array $filters = [
         'status' => [],
         'categories' => [],
     ];
     public $sortBy = 'updated_at';
     public $sortDirection = 'desc';
 
-    public array $categories = [];
+    public $categories = [];
 
     public function mount()
     {
-        $this->categories = Category::orderBy('name')->pluck('name', 'id')->toArray();
+        // ? using sub query
+        // * SELECT id, name FROM categories WHERE id IN ( SELECT DISTINCT category_id FROM products) ORDER BY name ASC;
+
+        $products = Product::select('category_id')->distinct();
+        $this->categories = Category::select('id', 'name')
+            ->whereIn('id', $products)
+            ->orderBy('name')
+            ->get()
+            ->toArray();
+        // dd($this->categories);
     }
 
     #[On('product-saved')]

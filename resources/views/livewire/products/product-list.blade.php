@@ -1,124 +1,242 @@
-<div>
-    <div class="grid grid-cols-2 items-center gap-4 mb-4">
+<div class="w-full box-border select-none">
+
+    <div class="w-full grid grid-cols-2 items-center gap-4 mb-4">
+
+        <!-- Per Page -->
         <div class="w-fit">
             <flux:select wire:model.change.live="quantity">
                 @foreach ([5, 10, 15, 20] as $item)
-                    <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
+                    <flux:select.option :value="$item">{{ $item }}</flux:select.option>
                 @endforeach
             </flux:select>
         </div>
 
-        <div class="flex items-center justify-end-safe gap-4 ">
+        <!-- Filters + Search -->
+        <div class="flex flex-wrap items-center justify-end gap-4">
+
+            <!-- Filter Dropdown -->
             <flux:dropdown>
-                <flux:button icon:trailing="chevron-down">Filter</flux:button>
+                <flux:button icon="funnel" icon:trailing="chevron-down">Filter by</flux:button>
 
                 <flux:menu>
+                    <!-- Status Filter -->
                     <flux:menu.submenu heading="Status">
                         <flux:menu.checkbox.group wire:model.live="filters.status">
                             <flux:menu.checkbox keep-open value="active">Active</flux:menu.checkbox>
                             <flux:menu.checkbox keep-open value="inactive">Inactive</flux:menu.checkbox>
                         </flux:menu.checkbox.group>
+
                         <flux:menu.separator />
-                        <flux:menu.item variant="danger" wire:click="clearFilters('status')">Clear</flux:menu.item>
+
+                        <flux:menu.item variant="danger" wire:click="clearFilters('status')">
+                            Clear
+                        </flux:menu.item>
                     </flux:menu.submenu>
 
+                    <!-- Category Filter -->
                     <flux:menu.submenu heading="Category">
-                        <flux:menu.checkbox.group wire:model.live="filters.categories">
-                            @foreach ($categories as $index => $category)
-                                <flux:menu.checkbox keep-open value="{{ $index }}">{{ $category }}
-                                </flux:menu.checkbox>
-                            @endforeach
-                        </flux:menu.checkbox.group>
 
-                        <flux:menu.separator />
-                        <flux:menu.checkbox wire:click="clearFilters('categories')">Clear</flux:menu.checkbox>
+                        <div class="w-64">
+                            <!-- Search Category -->
+                            <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="searchCategories"
+                                placeholder="Search Categories..." clearable class="max-w-xs"
+                                title="Search categories" />
+
+                            <!-- Category List -->
+                            <div class="max-h-60 overflow-y-auto scrollbar-modern scrollbar-thin-1 my-2 pr-1">
+
+                                <flux:menu.checkbox.group wire:model.live="filters.categories">
+                                    @foreach ($categories as $category)
+                                        <flux:menu.checkbox keep-open class="text-wrap" :value="$category['id']">
+                                            {{ $category['name'] }}
+                                        </flux:menu.checkbox>
+                                    @endforeach
+                                </flux:menu.checkbox.group>
+
+                            </div>
+
+                            <flux:menu.separator />
+
+                            <flux:menu.item wire:click="clearFilters('categories')">
+                                Clear
+                            </flux:menu.item>
+
+                        </div>
                     </flux:menu.submenu>
 
                     <flux:menu.separator />
-                    <flux:menu.item variant="danger" wire:click="clearFilters">Reset Filters</flux:menu.item>
+
+                    <flux:menu.item variant="danger" wire:click="clearFilters">
+                        Reset Filters
+                    </flux:menu.item>
+
                 </flux:menu>
             </flux:dropdown>
 
+            <!-- Search -->
             <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search" placeholder="Search Products..."
                 clearable class="max-w-xs" title="Search by name, code, slug" />
+
         </div>
     </div>
 
-    <flux:table :paginate="$products">
+
+    <!-- Product Table -->
+    <flux:table :paginate="$products" class="table-fixed w-full">
+
+        <!-- Table Columns -->
         <flux:table.columns>
-            <flux:table.column>#</flux:table.column>
-            <flux:table.column>Code</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
-                wire:click="sort('name')">Name</flux:table.column>
-            <flux:table.column>Slug</flux:table.column>
-            <flux:table.column>Category</flux:table.column>
-            <flux:table.column>Status</flux:table.column>
-            <flux:table.column sortable :sorted="$sortBy === 'updated_at'" :direction="$sortDirection"
-                wire:click="sort('updated_at')">Last Updated</flux:table.column>
-            <flux:table.column align="center">Actions</flux:table.column>
+
+            <flux:table.column class="w-[3%]">#</flux:table.column>
+
+            <flux:table.column class="w-[7%]">
+                Code
+            </flux:table.column>
+
+            <flux:table.column class="w-[28%]" sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
+                wire:click="sort('name')">
+                Name
+            </flux:table.column>
+
+            <flux:table.column class="w-[13%]">
+                Slug
+            </flux:table.column>
+
+            <flux:table.column class="w-[14%]">
+                Category
+            </flux:table.column>
+
+            <flux:table.column class="w-[10%]">
+                Status
+            </flux:table.column>
+
+            <flux:table.column class="w-[10%] pr-0" sortable :sorted="$sortBy === 'updated_at'"
+                :direction="$sortDirection" wire:click="sort('updated_at')">
+                Last Updated
+            </flux:table.column>
+
+            <flux:table.column class="w-[6%]">
+                Actions
+            </flux:table.column>
         </flux:table.columns>
 
+        <!-- Table Rows -->
         <flux:table.rows>
-            @foreach ($products as $product)
+
+            @forelse ($products as $product)
                 <flux:table.row :key="$product->id">
-                    <flux:table.cell variant="strong">{{ $products->firstItem() + $loop->index }}</flux:table.cell>
-
-                    <flux:table.cell>{{ $product->code }}</flux:table.cell>
-
-                    <flux:table.cell>
-                        <flux:heading level="3">{{ $product->name }}</flux:heading>
-                        <flux:text class="mt-1" variant="subtle">{{ $product->description }}</flux:text>
+                    <!-- Serial -->
+                    <flux:table.cell variant="strong">
+                        {{ $products->firstItem() + $loop->index }}
                     </flux:table.cell>
 
+                    <!-- Code -->
                     <flux:table.cell>
-                        <flux:text>{{ $product->slug }}</flux:text>
+                        {{ $product->code }}
                     </flux:table.cell>
 
+                    <!-- Name -->
                     <flux:table.cell>
-                        <flux:text>{{ $product->category->name }}</flux:text>
-                    </flux:table.cell>
+                        <flux:heading level="3">
+                            {{ $product->name }}
+                        </flux:heading>
 
-
-                    <flux:table.cell>
-                        <flux:field variant="inline" wire:click="toggleActiveInactive({{ $product->id }})">
-                            <flux:switch :checked="$product->is_active" />
-                            <flux:label>
-                                @if ($product->is_active)
-                                    <flux:badge color="green" size="sm" class="w-15 items-center justify-center">
-                                        Active</flux:badge>
-                                @else
-                                    <flux:badge color="zinc" size="sm" class="w-15 items-center justify-center">
-                                        Inactive</flux:badge>
-                                @endif
-                            </flux:label>
-                        </flux:field>
-                    </flux:table.cell>
-
-                    <flux:table.cell>
-                        <flux:text class="mt-1.5 text-xs"> &#128337; {{ $product->updated_at->diffForHumans() }}
+                        <flux:text variant="subtle" class="mt-1 truncate">
+                            {{ $product->description }}
                         </flux:text>
                     </flux:table.cell>
 
-                    <flux:table.cell align="center">
-                        <flux:dropdown>
-                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
-                            </flux:button>
-
-                            <flux:menu>
-
-                                <flux:menu.item wire:click="$dispatch('edit-product', '{{ $product->id }}' )"
-                                    icon="pencil-square">Edit</flux:menu.item>
-
-                                <flux:menu.item icon="trash" variant="danger"
-                                    wire:click="deleteProduct({{ $product->id }})"
-                                    wire:confirm="Are you sure you want to delete this product?">Delete
-                                </flux:menu.item>
-                            </flux:menu>
-                        </flux:dropdown>
+                    <!-- Slug -->
+                    <flux:table.cell class="truncate">
+                        {{ $product->slug }}
                     </flux:table.cell>
-                    <!-- ... -->
+
+                    <!-- Category -->
+                    <flux:table.cell class="truncate">
+                        {{ $product->category->name }}
+                    </flux:table.cell>
+
+                    <!-- Status -->
+                    {{-- <flux:table.cell>
+
+                        <flux:field variant="inline" wire:click="toggleActiveInactive({{ $product->id }})"
+                            class="flex items-center justify-between gap-1 ">
+
+
+
+
+                            <flux:switch :checked="$product->is_active"
+                                wire:toggle-confirm="{method: 'toggleActiveInactive', message: 'Are you want to change this product status', params: [{{ $product->id }}]}" />
+                            <flux:label>
+                                <flux:badge class="w-14 text-xs  flex justify-center"
+                                    :color="$product->is_active ? 'green' : 'zinc'">
+                                    {{ $product->is_active ? 'Active' : 'Inactive' }}
+                                </flux:badge>
+                            </flux:label>
+
+                        </flux:field>
+
+                    </flux:table.cell> --}}
+
+
+
+                    <flux:table.cell class="py-2!">
+                        <label class="inline-flex items-center me-5 cursor-pointer" onclick="event.preventDefault()"
+                            wire:swal-confirm="{
+                                text: 'Are you sure you want to change the status?',
+                                method: 'toggleActiveInactive', 
+                                confirmButtonText: 'Toggle',
+                                confirmButtonClass: 'bg-green-600',
+                                cancelButtonClass: 'bg-gray-200',
+                                param: [{{ $product->id }}],
+                            }">
+
+                            <input type="checkbox" value="" class="sr-only peer" @checked($product->is_active)>
+                            <div
+                                class="relative w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-orange-500 dark:peer-checked:bg-orange-500">
+                            </div>
+                            <flux:badge color="{{ $product->is_active ? 'green' : 'zinc' }}" size="sm"
+                                inset="top bottom" class="w-16 justify-center select-none ms-3">
+                                {{ $product->is_active ? 'Active' : 'Inactive' }} </flux:badge>
+                        </label>
+                    </flux:table.cell>
+
+                    <!-- Updated -->
+                    <flux:table.cell>
+                        <flux:text class="text-xs mt-1.5 truncate">
+                            &#128337;
+                            {{ $product->updated_at->diffForHumans(['options' => \Carbon\Carbon::JUST_NOW]) }}
+                        </flux:text>
+                    </flux:table.cell>
+
+                    <!-- Actions -->
+                    <flux:table.cell>
+
+                        <flux:button :loading="false" size="xs" icon="pencil-square" variant="primary"
+                            color="indigo" class="mr-1.5" tooltip="Edit"
+                            wire:click="$dispatch('edit-product', {product: {{ $product->id }} })" />
+
+                        <flux:button size="xs" icon="trash" variant="primary" color="rose" loading="true"
+                            tooltip="Delete"
+                            wire:swal-confirm="{ 
+                                method: 'deleteProduct', 
+                                text: 'Are you sure you want to delete this post?', 
+                                param: [ {{ $product->id }} ] 
+                            }" />
+                    </flux:table.cell>
                 </flux:table.row>
-            @endforeach
+
+            @empty
+
+                <!-- Empty State -->
+                <flux:table.row>
+                    <flux:table.cell colspan="8" class="text-center py-12 text-red-500">
+                        No data found
+                    </flux:table.cell>
+                </flux:table.row>
+            @endforelse
+
         </flux:table.rows>
+
     </flux:table>
 </div>
