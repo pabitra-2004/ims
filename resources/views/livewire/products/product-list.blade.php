@@ -22,8 +22,8 @@
                     <!-- Status Filter -->
                     <flux:menu.submenu heading="Status">
                         <flux:menu.checkbox.group wire:model.live="filters.status">
-                            <flux:menu.checkbox keep-open value="active">Active</flux:menu.checkbox>
-                            <flux:menu.checkbox keep-open value="inactive">Inactive</flux:menu.checkbox>
+                            <flux:menu.checkbox value="active">Active</flux:menu.checkbox>
+                            <flux:menu.checkbox value="inactive">Inactive</flux:menu.checkbox>
                         </flux:menu.checkbox.group>
 
                         <flux:menu.separator />
@@ -43,8 +43,7 @@
                                 title="Search categories" />
 
                             <!-- Category List -->
-                            <div class="max-h-60 overflow-y-auto scrollbar-modern scrollbar-thin-1 my-2 pr-1">
-
+                            <div class="max-h-60 overflow-y-auto scrollbar-modern scrollbar-thin-1 my-1 pr-1">
                                 <flux:menu.checkbox.group wire:model.live="filters.categories">
                                     @foreach ($categories as $category)
                                         <flux:menu.checkbox keep-open class="text-wrap" :value="$category['id']">
@@ -52,7 +51,6 @@
                                         </flux:menu.checkbox>
                                     @endforeach
                                 </flux:menu.checkbox.group>
-
                             </div>
 
                             <flux:menu.separator />
@@ -81,7 +79,7 @@
     </div>
 
 
-    <!-- Product Table -->
+    <!-- Products Table -->
     <flux:table :paginate="$products" class="table-fixed w-full">
 
         <!-- Table Columns -->
@@ -157,47 +155,28 @@
                     </flux:table.cell>
 
                     <!-- Status -->
-                    {{-- <flux:table.cell>
-
-                        <flux:field variant="inline" wire:click="toggleActiveInactive({{ $product->id }})"
-                            class="flex items-center justify-between gap-1 ">
-
-
-
-
-                            <flux:switch :checked="$product->is_active"
-                                wire:toggle-confirm="{method: 'toggleActiveInactive', message: 'Are you want to change this product status', params: [{{ $product->id }}]}" />
-                            <flux:label>
-                                <flux:badge class="w-14 text-xs  flex justify-center"
-                                    :color="$product->is_active ? 'green' : 'zinc'">
-                                    {{ $product->is_active ? 'Active' : 'Inactive' }}
-                                </flux:badge>
-                            </flux:label>
-
-                        </flux:field>
-
-                    </flux:table.cell> --}}
-
-
-
                     <flux:table.cell class="py-2!">
                         <label class="inline-flex items-center me-5 cursor-pointer" onclick="event.preventDefault()"
                             wire:swal-confirm="{
-                                text: 'Are you sure you want to change the status?',
-                                method: 'toggleActiveInactive', 
-                                confirmButtonText: 'Toggle',
-                                confirmButtonClass: 'bg-green-600',
-                                cancelButtonClass: 'bg-gray-200',
-                                param: [{{ $product->id }}],
+                                title: 'Change Status?',
+                                text: 'This action will update the status.',
+                                action: 'toggleActiveInactive', 
+                                params: [{{ $product->id }}],
+                                confirmButtonText: 'Toggle', 
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'px-5 py-2 mr-4 rounded-md text-white font-medium bg-green-600 transition duration-200 hover:bg-green-700 active:bg-green-800',
+                                    cancelButton: 'px-5 py-2 rounded-md font-medium bg-gray-200 text-gray-700 transition duration-200 hover:bg-gray-300 active:bg-gray-400',
+                                }
                             }">
-
                             <input type="checkbox" value="" class="sr-only peer" @checked($product->is_active)>
                             <div
-                                class="relative w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-orange-500 dark:peer-checked:bg-orange-500">
+                                class="relative w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 dark:peer-checked:bg-blue-500">
                             </div>
                             <flux:badge color="{{ $product->is_active ? 'green' : 'zinc' }}" size="sm"
-                                inset="top bottom" class="w-16 justify-center select-none ms-3">
-                                {{ $product->is_active ? 'Active' : 'Inactive' }} </flux:badge>
+                                class="w-16 justify-center select-none ms-2">
+                                {{ $product->is_active ? 'Active' : 'Inactive' }}
+                            </flux:badge>
                         </label>
                     </flux:table.cell>
 
@@ -219,9 +198,14 @@
                         <flux:button size="xs" icon="trash" variant="primary" color="rose" loading="true"
                             tooltip="Delete"
                             wire:swal-confirm="{ 
-                                method: 'deleteProduct', 
                                 text: 'Are you sure you want to delete this post?', 
-                                param: [ {{ $product->id }} ] 
+                                action: 'deleteProduct', 
+                                params: [ {{ $product->id }} ],
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-lg transition duration-200',
+                                    cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-lg ml-2 transition duration-200',
+                                } 
                             }" />
                     </flux:table.cell>
                 </flux:table.row>

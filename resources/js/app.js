@@ -1,13 +1,11 @@
 import Swal from "sweetalert2";
 
 document.addEventListener("livewire:init", () => {
-    Livewire.on("toast:fire", ({ type, message, ...config }) => {
-        // console.log(type, message);
-
+    Livewire.on("toast-fire", ({ type, message, ...config }) => {
         Swal.fire({
             icon: type,
             title: message,
-            position: "bottom",
+            position: "bottom-right",
             toast: true,
             showConfirmButton: false,
             timer: 3000,
@@ -23,8 +21,6 @@ document.addEventListener("livewire:init", () => {
     Livewire.directive(
         "swal-confirm",
         ({ el, directive, component, cleanup }) => {
-            // console.log(el, directive, component, cleanup);
-
             let expression = directive.expression;
 
             // The "directive" object gives you access to the parsed directive.
@@ -36,20 +32,16 @@ document.addEventListener("livewire:init", () => {
             // directive.expression = "deletePost(1)"
 
             let onClick = (e) => {
-                // console.log(content, JSON.parse(content));
-
                 // string to object convertion
                 const { title, text, action, params, ...config } = new Function(
                     "return " + expression,
                 )();
-                // console.log(title, text, action, params, config);
-
                 Swal.fire({
                     title: title ?? "Are you sure?",
                     text: text,
                     icon: "warning",
-                    showCancelButton: true,
                     confirmButtonText: "Yes, confirm!",
+                    showCancelButton: true,
                     ...config,
                 }).then((result) => {
                     if (result.isConfirmed) {
