@@ -55,6 +55,8 @@ class CategoryList extends Component
 
         // dd($_selected);
 
+        // $this->selected = [1, 2, 15, 12];
+
         $this->selected = collect($this->selected)->merge(explode(', ', $selected))->all();
 
         // dd($this->selected);
