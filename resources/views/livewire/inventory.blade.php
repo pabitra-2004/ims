@@ -98,21 +98,25 @@
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        @if ($product->stock?->quantity > 10)
-                            <flux:badge size="sm" color="green">In Stock</flux:badge>
-                        @elseif ($product->stock?->quantity > 0)
-                            <flux:badge size="sm" color="yellow">Low stock</flux:badge>
+
+                        @if ($product->inventory?->quantity)
+                            @if ($product->inventory->quantity > 10)
+                                <flux:badge size="sm" color="green">In Stock</flux:badge>
+                            @elseif ($product->inventory->quantity > 0)
+                                <flux:badge size="sm" color="yellow">Low Stock</flux:badge>
+                            @endif
                         @else
-                            <flux:badge size="sm" color="rose">Out of stock</flux:badge>
+                            <flux:badge size="sm" color="rose">Out of Stock</flux:badge>
                         @endif
+
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        {{ $product->stock?->quantity ?? 0 }}
+                        {{ $product->inventory?->quantity ?? 0 }}
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        {{ $product->stock->reserved ?? 0 }}
+                        {{ $product->inventory->reserved ?? 0 }}
                         {{-- <div x-data="{ count: 0 }" x-modelable="count" {{ $attributes }}>
                             <button x-on:click="count--">-</button>
 
@@ -123,8 +127,8 @@
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        {{-- {{ $product->stock?->quantity ? ($product->stock->quantity - $product->stock->reserved) : 0 }} --}}
-                        {{ $product->stock?->quantity ? $product->stock->quantity - $product->stock->reserved : 0 }}
+                        {{-- {{ $product->inventory?->quantity ? ($product->inventory->quantity - $product->inventory->reserved) : 0 }} --}}
+                        {{ $product->inventory?->quantity ? $product->inventory->quantity - $product->inventory->reserved : 0 }}
                     </flux:table.cell>
 
                     <!-- Action buttons -->
