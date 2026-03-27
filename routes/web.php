@@ -19,5 +19,6 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::view('products', 'products.index')->middleware(['auth', 'verified'])->name('products.index');
+Route::view('stocks', 'stocks.index')->middleware(['auth', 'verified'])->name('stocks.index');
 
 require __DIR__ . '/settings.php';

@@ -23,9 +23,13 @@
                     :current="request()->routeIs('categories.index')" wire:navigate>
                     Categories
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="newspaper" :href="route('products.index')"
+                <flux:sidebar.item icon="cube" :href="route('products.index')"
                     :current="request()->routeIs('products.index')" wire:navigate>
                     Products
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="lifebuoy" :href="route('stocks.index')"
+                    :current="request()->routeIs('stocks.index')" wire:navigate>
+                    Stocks
                 </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>

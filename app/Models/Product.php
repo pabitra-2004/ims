@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
@@ -60,8 +61,6 @@ class Product extends Model
             $query->whereIn('category_id', $filters['categories']);
         }
     }
-
-
     // #[Scope]
     // protected function categorySearch(Builder $query, $searchCategories){
     //     if ($searchCategories) {
@@ -72,5 +71,10 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function stock(): HasOne
+    {
+        return $this->hasOne(Stock::class);
     }
 }
