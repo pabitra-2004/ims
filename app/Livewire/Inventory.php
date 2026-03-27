@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire\Stocks;
+namespace App\Livewire;
 
 use App\Models\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class ProductList extends Component
+class Inventory extends Component
 {
     use WithPagination;
 
@@ -57,7 +57,7 @@ class ProductList extends Component
     public function render()
     {
         $products = Product::with([
-            'stock:id,product_id,quantity,reserved',
+            'inventory:id,product_id,quantity',
             'category:id,name',
         ])
             ->whereIsActive(true)
@@ -66,7 +66,7 @@ class ProductList extends Component
         // Store current page IDs
         $this->pageProductIds = $products->pluck('id')->toArray();
 
-        return view('livewire.stocks.product-list', [
+        return view('livewire.inventory')->with([
             'products' => $products,
         ]);
     }

@@ -73,8 +73,8 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function stock(): HasOne
+    public function inventory(): HasOne
     {
-        return $this->hasOne(Stock::class);
+        return $this->hasOne(Inventory::class);
     }
 }

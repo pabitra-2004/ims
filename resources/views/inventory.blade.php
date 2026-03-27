@@ -1,5 +1,4 @@
 <x-layouts::app>
-
     <div class="mb-6">
         <div class="grid grid-cols-2 gap-4 items-center">
             <div>
