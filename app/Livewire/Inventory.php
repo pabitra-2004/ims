@@ -10,7 +10,7 @@ class Inventory extends Component
 {
     use WithPagination;
 
-    public $quantity = 10;
+    public $perPage = 10;
 
     public $selected = [];
 
@@ -47,11 +47,25 @@ class Inventory extends Component
         $this->dispatch('toast-fire', type: 'success', message: 'Page products deleted!');
     }
 
-    // delete individual
-    public function deleteInventory(Product $product)
+    public function increment(Product $product)
     {
-        $product->delete();
-        $this->dispatch('toast-fire', type: 'sucess', message: 'Prdocuct deleted successfully!');
+        if ($product->inventory) {
+            // $product->inventory->quantity = $product->inventory->quantity + 1;
+            // $product->inventory->save();
+
+            $product->inventory->increment('quantity');
+
+        } else {
+            $product->inventory()->create(['quantity' => 1]);
+        }
+    }
+
+    public function decrement(Product $product)
+    {
+        if ($product->inventory) {
+            // dd($product->inventory->decrement('quantity'));
+            $product->inventory->decrement('quantity');
+        }
     }
 
     public function render()
@@ -61,7 +75,7 @@ class Inventory extends Component
             'category:id,name',
         ])
             ->whereIsActive(true)
-            ->paginate($this->quantity);
+            ->paginate($this->perPage);
 
         // Store current page IDs
         $this->pageProductIds = $products->pluck('id')->toArray();

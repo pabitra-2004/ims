@@ -1,15 +1,18 @@
 <div>
     {{-- @dd($products); --}}
 
-    <div class="w-full grid grid-cols-2 items-center gap-4 mb-4">
+    <div class="w-full grid grid-cols-2 items-center gap-4 mb-4 ">
 
         <!-- Per Page -->
-        <div class="w-fit">
-            <flux:select wire:model.change.live="quantity">
+        <div class="w-fit flex items-center gap-3">
+            <flux:select wire:model.change.live="perPage">
                 @foreach ([5, 10, 15, 20] as $item)
                     <flux:select.option :value="$item">{{ $item }}</flux:select.option>
                 @endforeach
             </flux:select>
+            <flux:button color="rose" icon="trash" :disabled="count($selected) === 0" wire:click="deleteSelected">
+                Delete Selected ({{ count($selected) }})
+            </flux:button>
         </div>
 
         <!-- Filters + search -->
@@ -28,7 +31,8 @@
                     <!-- Status Filter -->
                     <flux:menu.submenu heading="Status">
                         <flux:menu.checkbox.group {{-- wire:model.live="filters.status" --}}>
-                            <flux:menu.checkbox value="active">Active</flux:menu.checkbox>
+                            <flux:menu.checkbox value="intock">In Stock</flux:menu.checkbox>
+                            <flux:menu.checkbox value="inactive">Inactive</flux:menu.checkbox>
                             <flux:menu.checkbox value="inactive">Inactive</flux:menu.checkbox>
                         </flux:menu.checkbox.group>
 
@@ -51,45 +55,61 @@
         </div>
     </div>
 
-    <flux:button color="rose" icon="trash" :disabled="count($selected) === 0" wire:click="deleteSelected">
-        Delete Selected ({{ count($selected) }})
-    </flux:button>
+
 
     <flux:table :paginate="$products">
-
         <flux:table.columns sticky class="bg-transparent">
-            <flux:table.column sticky class="bg-transparent">
-                <input type="checkbox" wire:model.live="selectAll">
+            <flux:table.column class="pl-2">
+                <label for="checkboxSlideAll"
+                    class="flex items-center gap-2 text-sm font-medium text-on-surface dark:text-on-surface-dark has-checked:text-on-surface-strong dark:has-checked:text-on-surface-dark-strong has-disabled:cursor-not-allowed has-disabled:opacity-75">
+                    <span class="relative flex items-center">
+                        <input id="checkboxSlideAll" type="checkbox"
+                            class="before:content[''] peer relative size-4 appearance-none overflow-hidden rounded-sm border border-outline bg-surface-alt before:absolute before:inset-0 checked:border-primary checked:before:bg-primary focus:outline-outline-strong checked:focus:outline-primary active:outline-offset-0 disabled:cursor-not-allowed dark:border-outline-dark dark:bg-surface-dark-alt dark:checked:border-primary-dark dark:checked:before:bg-primary-dark dark:focus:outline-outline-dark-strong dark:checked:focus:outline-primary-dark"
+                            wire:model.live="selectAll" />
+
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                            stroke="currentColor" fill="none" stroke-width="4"
+                            class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </span>
+                </label>
             </flux:table.column>
-            <flux:table.column sticky class="bg-transparent">#</flux:table.column>
             <flux:table.column>Product</flux:table.column>
-            <flux:table.column>Product Code</flux:table.column>
             <flux:table.column>Category</flux:table.column>
             <flux:table.column>Status</flux:table.column>
             <flux:table.column>Stock</flux:table.column>
-            <flux:table.column>Reserved</flux:table.column>
-            <flux:table.column>Available</flux:table.column>
-            <flux:table.column>Action</flux:table.column>
         </flux:table.columns>
-
         <flux:table.rows>
             @foreach ($products as $product)
                 <flux:table.row :key="$product->id">
                     <flux:table.cell>
-                        <input type="checkbox" value="{{ $product->id }}" wire:model.live="selected">
+
+                        <label for="checkboxSlideUp"
+                            class="flex items-center gap-2 text-sm font-medium text-on-surface dark:text-on-surface-dark has-checked:text-on-surface-strong dark:has-checked:text-on-surface-dark-strong has-disabled:cursor-not-allowed has-disabled:opacity-75">
+                            <span class="relative flex items-center">
+                                <input id="checkboxSlideUp" type="checkbox"
+                                    class="before:content[''] peer relative size-4 appearance-none overflow-hidden rounded-sm border border-outline bg-surface-alt before:absolute before:inset-0 checked:border-primary checked:before:bg-primary focus:outline-outline-strong checked:focus:outline-primary active:outline-offset-0 disabled:cursor-not-allowed dark:border-outline-dark dark:bg-surface-dark-alt dark:checked:border-primary-dark dark:checked:before:bg-primary-dark dark:focus:outline-outline-dark-strong dark:checked:focus:outline-primary-dark"
+                                    value="{{ $product->id }}" wire:model.live="selected" />
+
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                                    stroke="currentColor" fill="none" stroke-width="4"
+                                    class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                            </span>
+                        </label>
+                        {{-- <input type="checkbox" value="{{ $product->id }}" wire:model.live="selected" class="w-4 h-4 bg-gray-100 border border-gray-300 rounded"> --}}
                     </flux:table.cell>
 
-                    <flux:table.cell>{{ $products->firstItem() + $loop->index }}</flux:table.cell>
-
                     <flux:table.cell class="flex items-center gap-3 ">
-                        <flux:avatar size="sm" circle src="https://unavatar.io/x/calebporzio" />
+                        <flux:avatar size="lg" src="https://unavatar.io/x/calebporzio" />
                         <div class="flex flex-col">
                             <flux:heading>{{ $product->name }}</flux:heading>
-                            <flux:text class="max-sm:hidden truncate max-w-xs">{{ $product->description }}</flux:text>
+                            <flux:text class="max-sm:hidden truncate max-w-xs">[ {{ $product->code }} ]</flux:text>
                         </div>
                     </flux:table.cell>
 
-                    <flux:table.cell>#{{ $product->code }}</flux:table.cell>
 
                     <flux:table.cell>
                         <flux:badge size="sm" class="max-w-32">
@@ -98,7 +118,6 @@
                     </flux:table.cell>
 
                     <flux:table.cell>
-
                         @if ($product->inventory?->quantity)
                             @if ($product->inventory->quantity > 10)
                                 <flux:badge size="sm" color="green">In Stock</flux:badge>
@@ -108,51 +127,42 @@
                         @else
                             <flux:badge size="sm" color="rose">Out of Stock</flux:badge>
                         @endif
-
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        {{ $product->inventory?->quantity ?? 0 }}
+
+                        <div  class="flex flex-col gap-1">
+
+                            <div class="flex items-center">
+                                <button wire:click="decrement({{ $product->id }})"
+                                    class="flex items-center justify-center rounded-sm border border-neutral-300 bg-neutral-50 p-2 text-neutral-600 hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:focus-visible:outline-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                                        stroke="currentColor" fill="none" stroke-width="2" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                                    </svg>
+                                </button>
+
+                                <span class="w-12 text-center text-white select-none tracking-wider">
+                                    {{ $product->inventory?->quantity ?? 0 }}
+                                </span>
+
+                                <button wire:click="increment({{ $product->id }})"
+                                    class="flex items-center justify-center rounded-sm border border-neutral-300 bg-neutral-50 p-1.5 text-neutral-600 hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:focus-visible:outline-white"
+                                    >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                                        stroke="currentColor" fill="none" stroke-width="2" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
                     </flux:table.cell>
 
-                    <flux:table.cell>
-                        {{ $product->inventory->reserved ?? 0 }}
-                        {{-- <div x-data="{ count: 0 }" x-modelable="count" {{ $attributes }}>
-                            <button x-on:click="count--">-</button>
-
-                            <span x-text="count"></span>
-
-                            <button x-on:click="count++">+</button>
-                        </div> --}}
-                    </flux:table.cell>
-
-                    <flux:table.cell>
-                        {{-- {{ $product->inventory?->quantity ? ($product->inventory->quantity - $product->inventory->reserved) : 0 }} --}}
-                        {{ $product->inventory?->quantity ? $product->inventory->quantity - $product->inventory->reserved : 0 }}
-                    </flux:table.cell>
-
-                    <!-- Action buttons -->
-                    <flux:table.cell>
-
-                        {{-- <flux:button :loading="false" size="xs" icon="pencil-square" variant="primary"
-                            color="indigo" class="mr-1.5" tooltip="Edit"
-                            wire:click="$dispatch('edit-inventory', {product: {{ $product->id }} })" /> --}}
-
-                        <flux:button size="xs" icon="trash" variant="primary" color="rose" loading="true"
-                            tooltip="Delete"
-                            wire:swal-confirm="{ 
-                                text: 'You want to delete this product?', 
-                                action: 'deleteInventory', 
-                                params: [ {{ $product->id }} ],
-                                buttonsStyling: false,
-                                customClass: {
-                                    confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-lg transition duration-200',
-                                    cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-lg ml-2 transition duration-200',
-                                } 
-                            }" />
-                    </flux:table.cell>
                 </flux:table.row>
             @endforeach
         </flux:table.rows>
     </flux:table>
+
 </div>
