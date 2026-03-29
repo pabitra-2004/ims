@@ -131,6 +131,13 @@
                     <!-- Code -->
                     <flux:table.cell>
                         {{ $product->code }}
+
+
+                        @if ($product->photo)
+                            <img src="{{ asset('storage/' . $product->photo) }}" alt="{{ $product->name }}"
+                                srcset="" class="aspect-4/5 rounded-lg h-28 w-auto">
+                        @endif
+
                     </flux:table.cell>
 
                     <!-- Name -->

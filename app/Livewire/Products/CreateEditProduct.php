@@ -8,10 +8,17 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class CreateEditProduct extends Component
 {
+    use WithFileUploads;
+
+    #[Validate('image|max:10240')] // 10MB Max
+    public $photo;
+
     #[Locked]
     public ?int $product_id = null;
 
@@ -55,6 +62,7 @@ class CreateEditProduct extends Component
             'code' => ['required', 'string', 'size:6', 'regex:/^[A-Z0-9]{6}$/', Rule::unique('products', 'code')->ignore($this->product_id)],
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', Rule::unique('products', 'slug')->ignore($this->product_id)],
+            'photo' => 'required|image|max:10240', // 10MB Max
             'description' => 'nullable|string',
         ]);
 
@@ -63,6 +71,7 @@ class CreateEditProduct extends Component
         $product->code = $this->code;
         $product->name = $this->name;
         $product->slug = $this->slug;
+        $product->photo = $this->photo->store('images/products', 'public');
         $product->description = $this->description;
 
         $product->save();
@@ -71,7 +80,7 @@ class CreateEditProduct extends Component
 
         $message = $this->product_id ? "Product updated successfully!"  : "Product added successfully!";
         $this->dispatch('toast-fire', type: 'success', message: $message);
-        
+
         $this->close();
     }
 
