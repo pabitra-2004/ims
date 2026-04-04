@@ -85,22 +85,22 @@
         <!-- Table Columns -->
         <flux:table.columns>
 
-            <flux:table.column class="w-[3%]">#</flux:table.column>
+            <flux:table.column class="w-[2%]">#</flux:table.column>
 
             <flux:table.column class="w-[7%]">
                 Code
             </flux:table.column>
 
-            <flux:table.column class="w-[28%]" sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
+            <flux:table.column class="w-[35%]" sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
                 wire:click="sort('name')">
                 Name
             </flux:table.column>
 
-            <flux:table.column class="w-[13%]">
+            <flux:table.column class="w-[12%]">
                 Slug
             </flux:table.column>
 
-            <flux:table.column class="w-[14%]">
+            <flux:table.column class="w-[10%]">
                 Category
             </flux:table.column>
 
@@ -131,25 +131,25 @@
                     <!-- Code -->
                     <flux:table.cell>
                         {{ $product->code }}
-
-
-                        @if ($product->photo)
-                            <img src="{{ asset('storage/' . $product->photo) }}" alt="{{ $product->name }}"
-                                srcset="" class="aspect-4/5 rounded-lg h-28 w-auto">
-                        @endif
-
                     </flux:table.cell>
 
-                    <!-- Name -->
-                    <flux:table.cell>
-                        <flux:heading level="3">
-                            {{ $product->name }}
-                        </flux:heading>
-
-                        <flux:text variant="subtle" class="mt-1 truncate">
-                            {{ $product->description }}
-                        </flux:text>
+                    <!-- product photo, name, description -->
+                    <flux:table.cell class="flex items-center gap-3 ">
+                        <flux:avatar size="xl"
+                            src="{{ $product->photo ? asset('storage/' . $product->photo) : asset('default_images.png') }}"
+                            alt="{{ $product->name }}" />
+                        <div class="truncate">
+                            <flux:heading level="3">
+                                {{ $product->name }}
+                            </flux:heading>
+                            <flux:text variant="subtle" class="mt-1">
+                                <div class="truncate">
+                                    {{ $product->description }}
+                                </div>
+                            </flux:text>
+                        </div>
                     </flux:table.cell>
+
 
                     <!-- Slug -->
                     <flux:table.cell class="truncate">

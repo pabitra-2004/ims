@@ -4,6 +4,7 @@ namespace App\Livewire\Products;
 
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
@@ -18,10 +19,10 @@ class CreateEditProduct extends Component
 
     #[Validate('image|max:10240')] // 10MB Max
     public $photo;
+    public $existing_photo;
 
     #[Locked]
     public ?int $product_id = null;
-
     public int $category_id;
     public string $code;
     public string $name;
@@ -44,6 +45,7 @@ class CreateEditProduct extends Component
         $this->name = $product->name;
         $this->slug = $product->slug;
         $this->description = $product->description;
+        $this->existing_photo = $product->photo; 
 
         $this->modal('create-edit-product')->show();
     }
@@ -62,7 +64,7 @@ class CreateEditProduct extends Component
             'code' => ['required', 'string', 'size:6', 'regex:/^[A-Z0-9]{6}$/', Rule::unique('products', 'code')->ignore($this->product_id)],
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', Rule::unique('products', 'slug')->ignore($this->product_id)],
-            'photo' => 'required|image|max:10240', // 10MB Max
+            'photo' => [$this->existing_photo ? 'nullable' : 'required', 'image', 'max:10240'], // 10MB Max
             'description' => 'nullable|string',
         ]);
 
@@ -71,14 +73,19 @@ class CreateEditProduct extends Component
         $product->code = $this->code;
         $product->name = $this->name;
         $product->slug = $this->slug;
-        $product->photo = $this->photo->store('images/products', 'public');
+        if($this->photo){
+            if($this->existing_photo){
+                Storage::disk('public')->delete($this->existing_photo);
+            }
+            $product->photo = $this->photo->store('images/products', 'public');
+        }
         $product->description = $this->description;
 
         $product->save();
         $this->dispatch('product-saved');
         $this->modal('create-edit-product')->close();
 
-        $message = $this->product_id ? "Product updated successfully!"  : "Product added successfully!";
+        $message = $this->product_id ? 'Product updated successfully!' : 'Product added successfully!';
         $this->dispatch('toast-fire', type: 'success', message: $message);
 
         $this->close();
@@ -86,7 +93,7 @@ class CreateEditProduct extends Component
 
     public function close()
     {
-        $this->reset(['product_id', 'category_id', 'code', 'name', 'slug', 'description']);
+        $this->reset(['product_id', 'category_id', 'code', 'name', 'slug', 'photo', 'existing_photo', 'description']);
         $this->resetValidation();
     }
 
