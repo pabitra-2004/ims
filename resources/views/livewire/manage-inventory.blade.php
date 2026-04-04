@@ -19,8 +19,8 @@
         <div class="flex flex-wrap items-center justify-end gap-4">
 
             <!-- Search -->
-            <flux:input icon="magnifying-glass" {{-- wire:model.live.debounce.350ms="search" --}} placeholder="Search anything here..." clearable
-                class="max-w-xs" title="Search by name, code" />
+            <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search"
+                placeholder="Search anything here..." clearable class="max-w-xs" title="Search by name, code" />
 
 
             <!-- Filter Dropdown -->
@@ -30,10 +30,10 @@
                 <flux:menu>
                     <!-- Status Filter -->
                     <flux:menu.submenu heading="Status">
-                        <flux:menu.checkbox.group {{-- wire:model.live="filters.status" --}}>
-                            <flux:menu.checkbox value="intock">In Stock</flux:menu.checkbox>
-                            <flux:menu.checkbox value="inactive">Inactive</flux:menu.checkbox>
-                            <flux:menu.checkbox value="inactive">Inactive</flux:menu.checkbox>
+                        <flux:menu.checkbox.group wire:model.live="filters.status">
+                            <flux:menu.checkbox value="in_stock">In Stock</flux:menu.checkbox>
+                            <flux:menu.checkbox value="low_stock">Low Stock</flux:menu.checkbox>
+                            <flux:menu.checkbox value="out_of_stock">Out of Stock</flux:menu.checkbox>
                         </flux:menu.checkbox.group>
 
                         <flux:menu.separator />
@@ -54,7 +54,6 @@
 
         </div>
     </div>
-
 
 
     <flux:table :paginate="$products">
@@ -81,10 +80,9 @@
             <flux:table.column>Stock</flux:table.column>
         </flux:table.columns>
         <flux:table.rows>
-            @foreach ($products as $product)
+            @forelse ($products as $product)
                 <flux:table.row :key="$product->id">
                     <flux:table.cell>
-
                         <label for="checkboxSlideUp"
                             class="flex items-center gap-2 text-sm font-medium text-on-surface dark:text-on-surface-dark has-checked:text-on-surface-strong dark:has-checked:text-on-surface-dark-strong has-disabled:cursor-not-allowed has-disabled:opacity-75">
                             <span class="relative flex items-center">
@@ -99,11 +97,15 @@
                                 </svg>
                             </span>
                         </label>
-                        {{-- <input type="checkbox" value="{{ $product->id }}" wire:model.live="selected" class="w-4 h-4 bg-gray-100 border border-gray-300 rounded"> --}}
                     </flux:table.cell>
 
                     <flux:table.cell class="flex items-center gap-3 ">
-                        <flux:avatar size="lg" src="https://unavatar.io/x/calebporzio" />
+                        @if ($product->photo)
+                            {{-- <img src="{{ asset('storage/' . $product->photo) }}" alt="{{ $product->name }}"
+                                srcset="" class="aspect-4/5 rounded-lg h-28 w-auto"> --}}
+                            <flux:avatar size="xl" src="{{ asset('storage/' . $product->photo) }}"
+                                alt="{{ $product->name }} image" />
+                        @endif
                         <div class="flex flex-col">
                             <flux:heading>{{ $product->name }}</flux:heading>
                             <flux:text class="max-sm:hidden truncate max-w-xs">[ {{ $product->code }} ]</flux:text>
@@ -131,7 +133,7 @@
 
                     <flux:table.cell>
 
-                        <div  class="flex flex-col gap-1">
+                        <div class="flex flex-col gap-1">
 
                             <div class="flex items-center">
                                 <button wire:click="decrement({{ $product->id }})"
@@ -147,8 +149,7 @@
                                 </span>
 
                                 <button wire:click="increment({{ $product->id }})"
-                                    class="flex items-center justify-center rounded-sm border border-neutral-300 bg-neutral-50 p-1.5 text-neutral-600 hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:focus-visible:outline-white"
-                                    >
+                                    class="flex items-center justify-center rounded-sm border border-neutral-300 bg-neutral-50 p-1.5 text-neutral-600 hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:focus-visible:outline-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
                                         stroke="currentColor" fill="none" stroke-width="2" class="size-4">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -161,7 +162,14 @@
                     </flux:table.cell>
 
                 </flux:table.row>
-            @endforeach
+            @empty
+                <!-- Empty State -->
+                <flux:table.row>
+                    <flux:table.cell colspan="8" class="text-center py-12 text-red-500">
+                        No data found
+                    </flux:table.cell>
+                </flux:table.row>
+            @endforelse
         </flux:table.rows>
     </flux:table>
 

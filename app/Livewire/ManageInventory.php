@@ -3,20 +3,25 @@
 namespace App\Livewire;
 
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Inventory extends Component
+class ManageInventory extends Component
 {
     use WithPagination;
 
     public $perPage = 10;
 
     public $selected = [];
-
     public $selectAll = false;
-
     public $pageProductIds = [];
+
+    public ?string $search = '';
+    
+    public array $filters = [
+        'status' => [],
+    ];
 
     public function updatedSelectAll($checked)
     {
@@ -68,6 +73,7 @@ class Inventory extends Component
         }
     }
 
+    
     public function render()
     {
         $products = Product::with([
@@ -75,12 +81,47 @@ class Inventory extends Component
             'category:id,name',
         ])
             ->whereIsActive(true)
+            ->search($this->search)
+            ->where(function(Builder $query){
+                $in_stock = in_array('in_stock', $this->filters['status']);
+                $low_stock = in_array('low_stock', $this->filters['status']);
+                $out_of_stock = in_array('out_of_stock', $this->filters['status']);
+
+                if($in_stock & $low_stock & $out_of_stock){}
+                elseif($in_stock & $low_stock){
+                    $query->whereRelation('inventory', 'quantity', '>', 0);
+                }
+                elseif($in_stock & $out_of_stock){
+                    $query->whereRelation('inventory', 'quantity', '>', 10)
+                    ->orWhereRelation('inventory', 'quantity', 0)
+                    ->orDoesntHave('inventory');
+                }
+                elseif($low_stock & $out_of_stock){
+                    $query->whereRelation('inventory', 'quantity', '<=', 10)
+                    ->orDoesntHave('inventory');
+                }
+                else{
+                    if($in_stock){
+                        $query->whereRelation('inventory', 'quantity', '>', 10);
+                    }
+                    elseif($low_stock){
+                        $query->whereHas('inventory', function ($query) {
+                            $query->whereBetween('quantity', [1, 10]);
+                        });
+                    }
+                    elseif($out_of_stock){
+                        $query->doesntHave('inventory')
+                        ->orWhereRelation('inventory', 'quantity', 0);
+                    }
+                }
+
+            })
             ->paginate($this->perPage);
 
         // Store current page IDs
         $this->pageProductIds = $products->pluck('id')->toArray();
 
-        return view('livewire.inventory')->with([
+        return view('livewire.manage-inventory')->with([
             'products' => $products,
         ]);
     }

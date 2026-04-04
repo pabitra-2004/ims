@@ -16,5 +16,5 @@
         <flux:separator variant="subtle" class="mt-4" />
     </div>
 
-    <livewire:inventory />
+    <livewire:manage-inventory />
 </x-layouts::app>
