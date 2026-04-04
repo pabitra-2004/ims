@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Product::class)->unique()->constrained()->cascadeOnDelete();
             $table->unsignedMediumInteger('quantity')->default(0);
             $table->timestamps();
         });
