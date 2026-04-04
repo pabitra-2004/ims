@@ -6,10 +6,6 @@
                     <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
                 @endforeach
             </flux:select>
-
-            <div class="bg-green-200 rounded py-1.5 px-3">
-                Selected: <span class="font-semibold">{{ count($selected) }}</span>
-            </div>
         </div>
         <div class="flex justify-end-safe items-center gap-4">
             <flux:dropdown>
@@ -34,100 +30,167 @@
     </div>
 
     <div class="flex gap-4 justify-end-safe items-center">
-        <flux:button wire:click="actionForAll('delete')">Delete All</flux:button>
-        <flux:button wire:click="actionForAll('active')">Active All</flux:button>
-        <flux:button wire:click="actionForAll('inactive')">Inactive All</flux:button>
-    </div>
+        <flux:button icon="trash" color="rose" :loading="false" :disabled="count($selected) === 0"
+            wire:swal-confirm="{ 
+                    text: 'Are you sure you want to delete this category?', 
+                    action: 'actionForAll', 
+                    params: [ 'delete' ],
+                    buttonsStyling: false,
+                    customClass: {
+                        confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-lg transition duration-200',
+                        cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-lg ml-2 transition duration-200',
+                }, 
+            }">
+            Delete Selected ({{ count($selected) }})
+        </flux:button>
 
-    {{-- @dd($categories->implode('id', ', ')) --}}
+        <flux:button :disabled="count($selected) === 0"
+            wire:swal-confirm="{
+                title: 'Change Status?',
+                text: 'This action will update the status.',
+                action: 'actionForAll', 
+                params: [ 'active' ],
+                confirmButtonText: 'Toggle', 
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'px-5 py-2 mr-4 rounded-md text-white font-medium bg-green-600 transition duration-200 hover:bg-green-700 active:bg-green-800',
+                    cancelButton: 'px-5 py-2 rounded-md font-medium bg-gray-200 text-gray-700 transition duration-200 hover:bg-gray-300 active:bg-gray-400',
+                }
+            }">
+            Active All
+        </flux:button>
+        
+        <flux:button :disabled="count($selected) === 0"
+            wire:swal-confirm="{
+                title: 'Change Status?',
+                text: 'This action will update the status.',
+                action: 'actionForAll', 
+                params: [ 'inactive' ],
+                confirmButtonText: 'Toggle', 
+                buttonsStyling: false,
+                customClass: {
+                    confirmButton: 'px-5 py-2 mr-4 rounded-md text-white font-medium bg-green-600 transition duration-200 hover:bg-green-700 active:bg-green-800',
+                    cancelButton: 'px-5 py-2 rounded-md font-medium bg-gray-200 text-gray-700 transition duration-200 hover:bg-gray-300 active:bg-gray-400',
+                }
+            }">
+            Inactive All</flux:button>
+    </div>
 
     <flux:table :paginate="$categories">
         <flux:table.columns>
             <flux:table.column>
-                {{-- <flux:checkbox wire:click="select('{{ $categories->implode('id', ', ') }}')" /> --}}
+                <label for="checkboxSlideAll"
+                    class="flex items-center gap-2 text-sm font-medium text-on-surface dark:text-on-surface-dark has-checked:text-on-surface-strong dark:has-checked:text-on-surface-dark-strong has-disabled:cursor-not-allowed has-disabled:opacity-75">
+                    <span class="relative flex items-center">
+                        <input id="checkboxSlideAll" type="checkbox"
+                            class="before:content[''] peer relative size-4 appearance-none overflow-hidden rounded-sm border border-outline bg-surface-alt before:absolute before:inset-0 checked:border-primary checked:before:bg-primary focus:outline-outline-strong checked:focus:outline-primary active:outline-offset-0 disabled:cursor-not-allowed dark:border-outline-dark dark:bg-surface-dark-alt dark:checked:border-primary-dark dark:checked:before:bg-primary-dark dark:focus:outline-outline-dark-strong dark:checked:focus:outline-primary-dark"
+                            wire:model.live="selectAll" />
 
-                @php
-                    $categoryIds = $categories->pluck('id')->all();
-                    $intersect_values = array_intersect($categoryIds, $selected);
-                    $checked = count($intersect_values) === count($categoryIds);
-                @endphp
-
-                <input type="checkbox" wire:click="select('{{ implode(', ', $categoryIds) }}')"
-                    {{ $checked ? 'checked' : '' }} />
-                {{ $checked ? 'checked' : 'unchecked' }}
-
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                            stroke="currentColor" fill="none" stroke-width="4"
+                            class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                        </svg>
+                    </span>
+                </label>
             </flux:table.column>
             <flux:table.column>#</flux:table.column>
             <flux:table.column>Name</flux:table.column>
             <flux:table.column>Slug</flux:table.column>
             <flux:table.column>Status</flux:table.column>
-            <flux:table.column align="center">Actions</flux:table.column>
+            <flux:table.column>Last Updated</flux:table.column>
+            <flux:table.column>Actions</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
-            @foreach ($categories as $category)
+            @forelse ($categories as $category)
                 <flux:table.row :key="$category->id">
-                    <flux:table.cell class="py-2!" align="center">
-                        {{-- <flux:checkbox :value="$category->id" /> --}}
+                    <flux:table.cell>
+                        <label for="checkboxSlideUp"
+                            class="flex items-center gap-2 text-sm font-medium text-on-surface dark:text-on-surface-dark has-checked:text-on-surface-strong dark:has-checked:text-on-surface-dark-strong has-disabled:cursor-not-allowed has-disabled:opacity-75">
+                            <span class="relative flex items-center">
+                                <input id="checkboxSlideUp" type="checkbox"
+                                    class="before:content[''] peer relative size-4 appearance-none overflow-hidden rounded-sm border border-outline bg-surface-alt before:absolute before:inset-0 checked:border-primary checked:before:bg-primary focus:outline-outline-strong checked:focus:outline-primary active:outline-offset-0 disabled:cursor-not-allowed dark:border-outline-dark dark:bg-surface-dark-alt dark:checked:border-primary-dark dark:checked:before:bg-primary-dark dark:focus:outline-outline-dark-strong dark:checked:focus:outline-primary-dark"
+                                    value="{{ $category->id }}" wire:model.live="selected" />
 
-                        <input type="checkbox" value="{{ $category->id }}" wire:model.live='selected'
-                            class="input-checkbox-category" />
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
+                                    stroke="currentColor" fill="none" stroke-width="4"
+                                    class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                            </span>
+                        </label>
                     </flux:table.cell>
 
-                    <flux:table.cell class="py-2!" variant="strong">{{ $categories->firstItem() + $loop->index }}
+                    <flux:table.cell>{{ $categories->firstItem() + $loop->index }}
                     </flux:table.cell>
 
-                    <flux:table.cell class="py-2!">
+                    <flux:table.cell>
                         <flux:heading class="font-semibold">{{ $category->name }}</flux:heading>
                         <flux:text class="mt-1.5 text-xs">{{ $category->description }}</flux:text>
                     </flux:table.cell>
 
-                    <flux:table.cell class="py-2!">{{ $category->slug }}</flux:table.cell>
+                    <flux:table.cell>{{ $category->slug }}</flux:table.cell>
 
-                    <flux:table.cell class="py-2!">
-
-                        <label class="inline-flex items-center me-5 cursor-pointer" onclick="event.preventDefault()"
+                    <flux:table.cell>
+                        <label class="flex items-center select-none cursor-pointer" onclick="event.preventDefault()"
                             wire:swal-confirm="{
-                                text: 'Are you sure you want to change the status?',
-                                action: 'toggleActiveInactive',
+                                title: 'Change Status?',
+                                text: 'This action will update the status.',
+                                action: 'toggleActiveInactive', 
                                 params: [{{ $category->id }}],
+                                confirmButtonText: 'Toggle', 
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'px-5 py-2 mr-4 rounded-md text-white font-medium bg-green-600 transition duration-200 hover:bg-green-700 active:bg-green-800',
+                                    cancelButton: 'px-5 py-2 rounded-md font-medium bg-gray-200 text-gray-700 transition duration-200 hover:bg-gray-300 active:bg-gray-400',
+                                }
                             }">
                             <input type="checkbox" value="" class="sr-only peer" @checked($category->is_active)>
                             <div
                                 class="relative w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-orange-500 dark:peer-checked:bg-orange-500">
                             </div>
                             <flux:badge color="{{ $category->is_active ? 'green' : 'zinc' }}" size="sm"
-                                inset="top bottom" class="w-16 justify-center select-none ms-3">
+                                class="w-16 justify-center ms-2.5">
                                 {{ $category->is_active ? 'Active' : 'Inactive' }}
                             </flux:badge>
                         </label>
-
                     </flux:table.cell>
 
-                    <flux:table.cell class="py-2!" align="center">
-                        <flux:dropdown>
-                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" inset="top bottom">
-                            </flux:button>
-
-                            <flux:menu>
-                                <flux:menu.item icon="pencil-square"
-                                    wire:click="$dispatch('edit-category', '{{ $category->id }}')">Edit
-                                </flux:menu.item>
-                                <flux:menu.item icon="trash" variant="danger"
-                                    wire:swal-confirm="{ text: 'Are you sure you want to delete this category?', action: 'deleteCategory', params: [{{ $category->id }}]}">
-                                    Delete
-                                </flux:menu.item>
-                            </flux:menu>
-                        </flux:dropdown>
-
-                    </flux:table.cell>
-
-                    <flux:table.cell class="py-2!" align="center">
-                        <flux:text class="mt-1.5 text-xs"> &#128337; {{ $category->updated_at->diffForHumans() }}
+                    <flux:table.cell>
+                        <flux:text class="text-xs truncate">
+                            &#128337;
+                            {{ $category->updated_at->diffForHumans(['options' => \Carbon\Carbon::JUST_NOW]) }}
                         </flux:text>
                     </flux:table.cell>
+
+                    <flux:table.cell>
+                        <flux:button size="xs" icon="pencil-square" variant="primary" color="indigo"
+                            :loading="false" tooltip="Edit" class="mr-1.5"
+                            wire:click="$dispatch('edit-category', {category: {{ $category->id }} })" />
+
+                        <flux:button size="xs" icon="trash" variant="primary" color="rose"
+                            :loading="false" tooltip="Delete"
+                            wire:swal-confirm="{ 
+                                text: 'Are you sure you want to delete this category?', 
+                                action: 'deleteCategory', 
+                                params: [ {{ $category->id }} ],
+                                buttonsStyling: false,
+                                customClass: {
+                                    confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-lg transition duration-200',
+                                    cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-lg ml-2 transition duration-200',
+                                }, 
+                            }" />
+                    </flux:table.cell>
                 </flux:table.row>
-            @endforeach
+            @empty
+                <!-- Empty State -->
+                <flux:table.row>
+                    <flux:table.cell colspan="8" class="text-center py-12 text-red-500">
+                        No data found
+                    </flux:table.cell>
+                </flux:table.row>
+            @endforelse
         </flux:table.rows>
     </flux:table>
 </div>
