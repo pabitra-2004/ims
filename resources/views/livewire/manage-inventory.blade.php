@@ -38,14 +38,14 @@
 
                         <flux:menu.separator />
 
-                        <flux:menu.item variant="danger" {{-- wire:click="clearFilters('status')" --}}>
+                        <flux:menu.item variant="danger" wire:click="clearFilters('status')">
                             Clear
                         </flux:menu.item>
                     </flux:menu.submenu>
 
                     <flux:menu.separator />
 
-                    <flux:menu.item variant="danger" wire:click="#">
+                    <flux:menu.item variant="danger" wire:click="clearFilters">
                         Reset Filters
                     </flux:menu.item>
 

@@ -73,6 +73,14 @@ class ManageInventory extends Component
         }
     }
 
+    public function clearFilters($key = null)
+    {
+        if ($key) {
+            $this->filters[$key] = [];
+        } else {
+            $this->reset('filters');
+        }
+    }
     
     public function render()
     {
