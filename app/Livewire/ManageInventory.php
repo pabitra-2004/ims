@@ -18,7 +18,7 @@ class ManageInventory extends Component
     public $pageProductIds = [];
 
     public ?string $search = '';
-    
+
     public array $filters = [
         'status' => [],
     ];
@@ -59,7 +59,6 @@ class ManageInventory extends Component
             // $product->inventory->save();
 
             $product->inventory->increment('quantity');
-
         } else {
             $product->inventory()->create(['quantity' => 1]);
         }
@@ -68,8 +67,10 @@ class ManageInventory extends Component
     public function decrement(Product $product)
     {
         if ($product->inventory) {
-            // dd($product->inventory->decrement('quantity'));
-            $product->inventory->decrement('quantity');
+
+            if ($product->inventory?->quantity > 0) {
+                $product->inventory->decrement('quantity');
+            }
         }
     }
 
@@ -81,7 +82,7 @@ class ManageInventory extends Component
             $this->reset('filters');
         }
     }
-    
+
     public function render()
     {
         $products = Product::with([
@@ -90,39 +91,33 @@ class ManageInventory extends Component
         ])
             ->whereIsActive(true)
             ->search($this->search)
-            ->where(function(Builder $query){
+            ->where(function (Builder $query) {
                 $in_stock = in_array('in_stock', $this->filters['status']);
                 $low_stock = in_array('low_stock', $this->filters['status']);
                 $out_of_stock = in_array('out_of_stock', $this->filters['status']);
 
-                if($in_stock & $low_stock & $out_of_stock){}
-                elseif($in_stock & $low_stock){
+                if ($in_stock & $low_stock & $out_of_stock) {
+                } elseif ($in_stock & $low_stock) {
                     $query->whereRelation('inventory', 'quantity', '>', 0);
-                }
-                elseif($in_stock & $out_of_stock){
+                } elseif ($in_stock & $out_of_stock) {
                     $query->whereRelation('inventory', 'quantity', '>', 10)
-                    ->orWhereRelation('inventory', 'quantity', 0)
-                    ->orDoesntHave('inventory');
-                }
-                elseif($low_stock & $out_of_stock){
+                        ->orWhereRelation('inventory', 'quantity', 0)
+                        ->orDoesntHave('inventory');
+                } elseif ($low_stock & $out_of_stock) {
                     $query->whereRelation('inventory', 'quantity', '<=', 10)
-                    ->orDoesntHave('inventory');
-                }
-                else{
-                    if($in_stock){
+                        ->orDoesntHave('inventory');
+                } else {
+                    if ($in_stock) {
                         $query->whereRelation('inventory', 'quantity', '>', 10);
-                    }
-                    elseif($low_stock){
+                    } elseif ($low_stock) {
                         $query->whereHas('inventory', function ($query) {
                             $query->whereBetween('quantity', [1, 10]);
                         });
-                    }
-                    elseif($out_of_stock){
+                    } elseif ($out_of_stock) {
                         $query->doesntHave('inventory')
-                        ->orWhereRelation('inventory', 'quantity', 0);
+                            ->orWhereRelation('inventory', 'quantity', 0);
                     }
                 }
-
             })
             ->paginate($this->perPage);
 

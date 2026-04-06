@@ -77,7 +77,7 @@
             <flux:table.column>Product</flux:table.column>
             <flux:table.column>Category</flux:table.column>
             <flux:table.column>Status</flux:table.column>
-            <flux:table.column>Stock</flux:table.column>
+            <flux:table.column align="center">Stock</flux:table.column>
         </flux:table.columns>
         <flux:table.rows>
             @forelse ($products as $product)
@@ -131,32 +131,18 @@
                         @endif
                     </flux:table.cell>
 
-                    <flux:table.cell>
+                    <flux:table.cell align="center">
 
-                        <div class="flex flex-col gap-1">
+                        <div class="flex justify-center">
+                            <flux:button icon="minus" size="xs" wire:click="decrement({{ $product->id }})"
+                                :disabled='!$product->inventory?->quantity' />
 
-                            <div class="flex items-center">
-                                <button wire:click="decrement({{ $product->id }})"
-                                    class="flex items-center justify-center rounded-sm border border-neutral-300 bg-neutral-50 p-2 text-neutral-600 hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:focus-visible:outline-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
-                                        stroke="currentColor" fill="none" stroke-width="2" class="size-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
-                                    </svg>
-                                </button>
+                            <span
+                                class="w-16 text-center select-none tracking-wider tabular-nums font-medium text-lg text-current">
+                                {{ $product->inventory?->quantity ?? 0 }}
+                            </span>
 
-                                <span class="w-12 text-center text-white select-none tracking-wider">
-                                    {{ $product->inventory?->quantity ?? 0 }}
-                                </span>
-
-                                <button wire:click="increment({{ $product->id }})"
-                                    class="flex items-center justify-center rounded-sm border border-neutral-300 bg-neutral-50 p-1.5 text-neutral-600 hover:opacity-75 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:focus-visible:outline-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
-                                        stroke="currentColor" fill="none" stroke-width="2" class="size-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                </button>
-                            </div>
+                            <flux:button icon="plus" size="xs" wire:click="increment({{ $product->id }})" />
                         </div>
 
                     </flux:table.cell>
