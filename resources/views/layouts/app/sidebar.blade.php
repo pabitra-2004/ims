@@ -30,6 +30,9 @@
                 <flux:sidebar.item icon="lifebuoy" :href="route('inventory')" wire:navigate>
                     Inventory
                 </flux:sidebar.item>
+                <flux:sidebar.item icon="lifebuoy" :href="route('states')" wire:navigate>
+                    States
+                </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>
 

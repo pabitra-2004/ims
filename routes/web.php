@@ -14,6 +14,7 @@ Route::middleware('auth')->group(function () {
     Route::view('categories', 'categories.index')->name('categories.index');
     Route::view('products', 'products.index')->name('products.index');
     Route::view('inventory', 'inventory')->name('inventory');
+    Route::view('states', 'state')->name('states');
 });
 
 require __DIR__ . '/settings.php';
