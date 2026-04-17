@@ -6,9 +6,9 @@
             </flux:text>
         </div>
 
-        <flux:input wire:model.blur.live='name' label="Name" placeholder="Category Name" badge="Required" required />
+        <flux:input wire:model.blur.live='name' label="Name" placeholder="Category Name" badge="Required" autocomplete="off" required />
 
-        <flux:input wire:model='slug' label="Slug" placeholder="Slug" badge="Required" required
+        <flux:input wire:model='slug' label="Slug" placeholder="Slug" badge="Required" autocomplete="off" required
             description="eg: water-bottle" />
 
         <flux:textarea wire:model='description' label="Description" placeholder="Enter description here."
@@ -18,7 +18,7 @@
         <div class="flex">
             <flux:spacer />
 
-            <flux:button type="submit" variant="primary">Save changes</flux:button>
+            <flux:button type="submit" size="sm" variant="primary">Save changes</flux:button>
         </div>
     </form>
 </flux:modal>

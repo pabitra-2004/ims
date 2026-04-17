@@ -1,21 +1,68 @@
 <div>
-    <div class="grid grid-cols-2 gap-4 items-center mb-6">
-        <div class="flex justify-start items-center gap-4">
-            <flux:select wire:model.change.live="quantity" class="w-fit">
+    <div class="grid grid-cols-2 gap-4 items-center mb-2">
+        <div class="flex justify-start items-center gap-2">
+            <flux:select wire:model.change.live="quantity" class="w-fit" size="sm">
                 @foreach ([5, 10, 15, 20] as $item)
                     <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
                 @endforeach
             </flux:select>
+
+            <flux:button icon="trash" color="rose" :loading="false" size="sm"
+                :disabled="count($selected) === 0"
+                wire:swal-confirm="{ 
+                        text: 'Are you sure you want to delete this category?', 
+                        action: 'actionForAll', 
+                        params: [ 'delete' ],
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-lg transition duration-200',
+                            cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-lg ml-2 transition duration-200',
+                        }, 
+                    }">
+                Delete Selected ({{ count($selected) }})
+            </flux:button>
+
+            <flux:button size="sm" :disabled="count($selected) === 0"
+                wire:swal-confirm="{
+                        title: 'Change Status?',
+                        text: 'This action will update the status.',
+                        action: 'actionForAll', 
+                        params: [ 'active' ],
+                        confirmButtonText: 'Toggle', 
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'px-5 py-2 mr-4 rounded-md text-white font-medium bg-green-600 transition duration-200 hover:bg-green-700 active:bg-green-800',
+                            cancelButton: 'px-5 py-2 rounded-md font-medium bg-gray-200 text-gray-700 transition duration-200 hover:bg-gray-300 active:bg-gray-400',
+                        }
+                    }">
+                Active All
+            </flux:button>
+
+            <flux:button size="sm" :disabled="count($selected) === 0"
+                wire:swal-confirm="{
+                        title: 'Change Status?',
+                        text: 'This action will update the status.',
+                        action: 'actionForAll', 
+                        params: [ 'inactive' ],
+                        confirmButtonText: 'Toggle', 
+                        buttonsStyling: false,
+                        customClass: {
+                            confirmButton: 'px-5 py-2 mr-4 rounded-md text-white font-medium bg-green-600 transition duration-200 hover:bg-green-700 active:bg-green-800',
+                            cancelButton: 'px-5 py-2 rounded-md font-medium bg-gray-200 text-gray-700 transition duration-200 hover:bg-gray-300 active:bg-gray-400',
+                        }
+                    }">
+                Inactive All
+            </flux:button>
         </div>
-        <div class="flex justify-end-safe items-center gap-4">
+        <div class="flex justify-end-safe items-center gap-2">
             <flux:dropdown>
-                <flux:button icon:trailing="chevron-down">Filters</flux:button>
+                <flux:button icon:trailing="chevron-down" size="sm">Filters</flux:button>
 
                 <flux:menu>
                     <flux:menu.checkbox.group wire:model.live="filters">
-                        <flux:menu.checkbox keep-open value="active">Active
+                        <flux:menu.checkbox value="active">Active
                         </flux:menu.checkbox>
-                        <flux:menu.checkbox keep-open value="inactive">Inactive
+                        <flux:menu.checkbox value="inactive">Inactive
                         </flux:menu.checkbox>
                     </flux:menu.checkbox.group>
 
@@ -24,56 +71,9 @@
                 </flux:menu>
             </flux:dropdown>
 
-            <flux:input icon="magnifying-glass" wire:model.live.debounce.300ms='search'
+            <flux:input icon="magnifying-glass" size="sm" wire:model.live.debounce.300ms='search'
                 placeholder="Search Categories..." clearable class="max-w-xs" />
         </div>
-    </div>
-
-    <div class="flex gap-4 justify-end-safe items-center">
-        <flux:button icon="trash" color="rose" :loading="false" :disabled="count($selected) === 0"
-            wire:swal-confirm="{ 
-                    text: 'Are you sure you want to delete this category?', 
-                    action: 'actionForAll', 
-                    params: [ 'delete' ],
-                    buttonsStyling: false,
-                    customClass: {
-                        confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-lg transition duration-200',
-                        cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-lg ml-2 transition duration-200',
-                }, 
-            }">
-            Delete Selected ({{ count($selected) }})
-        </flux:button>
-
-        <flux:button :disabled="count($selected) === 0"
-            wire:swal-confirm="{
-                title: 'Change Status?',
-                text: 'This action will update the status.',
-                action: 'actionForAll', 
-                params: [ 'active' ],
-                confirmButtonText: 'Toggle', 
-                buttonsStyling: false,
-                customClass: {
-                    confirmButton: 'px-5 py-2 mr-4 rounded-md text-white font-medium bg-green-600 transition duration-200 hover:bg-green-700 active:bg-green-800',
-                    cancelButton: 'px-5 py-2 rounded-md font-medium bg-gray-200 text-gray-700 transition duration-200 hover:bg-gray-300 active:bg-gray-400',
-                }
-            }">
-            Active All
-        </flux:button>
-        
-        <flux:button :disabled="count($selected) === 0"
-            wire:swal-confirm="{
-                title: 'Change Status?',
-                text: 'This action will update the status.',
-                action: 'actionForAll', 
-                params: [ 'inactive' ],
-                confirmButtonText: 'Toggle', 
-                buttonsStyling: false,
-                customClass: {
-                    confirmButton: 'px-5 py-2 mr-4 rounded-md text-white font-medium bg-green-600 transition duration-200 hover:bg-green-700 active:bg-green-800',
-                    cancelButton: 'px-5 py-2 rounded-md font-medium bg-gray-200 text-gray-700 transition duration-200 hover:bg-gray-300 active:bg-gray-400',
-                }
-            }">
-            Inactive All</flux:button>
     </div>
 
     <flux:table :paginate="$categories">
