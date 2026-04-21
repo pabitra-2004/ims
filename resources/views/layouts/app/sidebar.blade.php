@@ -30,8 +30,11 @@
                 <flux:sidebar.item icon="lifebuoy" :href="route('inventory')" wire:navigate>
                     Inventory
                 </flux:sidebar.item>
-                <flux:sidebar.item icon="lifebuoy" :href="route('states')" wire:navigate>
+                <flux:sidebar.item icon="map" :href="route('states')" wire:navigate>
                     States
+                </flux:sidebar.item>
+                <flux:sidebar.item icon="map-pin" :href="route('districts')" wire:navigate>
+                    Districts
                 </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>

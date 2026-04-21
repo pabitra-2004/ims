@@ -15,6 +15,7 @@ Route::middleware('auth')->group(function () {
     Route::view('products', 'products.index')->name('products.index');
     Route::view('inventory', 'inventory')->name('inventory');
     Route::livewire('states', 'pages::state-list')->name('states');
+    Route::livewire('districts', 'pages::district-list')->name('districts');
 });
 
 require __DIR__ . '/settings.php';
