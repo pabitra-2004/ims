@@ -1,10 +1,10 @@
 <?php
-use Livewire\Component;
 use App\Models\State;
 use Livewire\Attributes\Computed;
+use Livewire\Component;
 use Livewire\WithPagination;
-
-new class extends Component {
+new class extends Component
+{
     use WithPagination;
 
     public ?string $search = '';
@@ -16,7 +16,8 @@ new class extends Component {
         $this->resetPage();
     }
 
-    public function sort($column) {
+    public function sort($column)
+    {
         if ($this->sortBy === $column) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
@@ -25,13 +26,10 @@ new class extends Component {
         }
     }
 
-
     #[Computed]
     public function states()
     {
-        return State::search($this->search)
-        ->orderBy($this->sortBy, $this->sortDirection)
-        ->paginate(10);
+        return State::search($this->search)->orderBy($this->sortBy, $this->sortDirection)->paginate(10);
     }
 };
 ?>
@@ -52,25 +50,27 @@ new class extends Component {
                 placeholder="Search states..." clearable autocomplete="off" class="max-w-xs" />
         </div>
     </div>
-
+    
     <flux:table :paginate="$this->states" class="border  overflow-hidden rounded-lg border-gray-600 select-none">
         <flux:table.columns>
-            <flux:table.column sortable sorted direction="desc" wire:click="sort('lgd_code')" class="w-[12%] border-r pr-0" align="center">LGD Code
+            <flux:table.column sortable sorted direction="desc" wire:click="sort('lgd_code')"
+                class="w-[12%] border-r pr-0" align="center">LGD Code
             </flux:table.column>
             <flux:table.column class="w-[38%] border-r">Name</flux:table.column>
             <flux:table.column class="w-[37%] border-r">Local Name</flux:table.column>
-            <flux:table.column class="w-[12%]" align="center">State or UT</flux:table.column>
+            <flux:table.column class="w-[12%] pl-0" align="center">State or UT</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows>
             @forelse($this->states as $state)
                 <flux:table.row :key="$state->id">
-                    <flux:table.cell class="w-[12%] border-r" align="center">{{ $state->lgd_code }}</flux:table.cell>
+                    <flux:table.cell class="w-[12%] border-r" align="center">{{ $state->lgd_code }}
+                    </flux:table.cell>
                     <flux:table.cell class="w-[38%] border-r">{{ $state->name }}</flux:table.cell>
                     <flux:table.cell class="w-[37%] border-r">{{ $state->local_name }}</flux:table.cell>
                     <flux:table.cell class="w-[12%]" align="center">{{ $state->state_ut }}</flux:table.cell>
                 </flux:table.row>
-            @empty
+            @empty  
                 <flux:table.row>
                     <flux:table.cell colspan="8" class="text-center py-12 text-gray-400">
                         No states found.
