@@ -100,12 +100,9 @@
                     </flux:table.cell>
 
                     <flux:table.cell class="flex items-center gap-3 ">
-                        @if ($product->photo)
-                            {{-- <img src="{{ asset('storage/' . $product->photo) }}" alt="{{ $product->name }}"
-                                srcset="" class="aspect-4/5 rounded-lg h-28 w-auto"> --}}
-                            <flux:avatar size="xl" src="{{ asset('storage/' . $product->photo) }}"
-                                alt="{{ $product->name }} image" />
-                        @endif
+                        <flux:avatar size="xl"
+                            src="{{ $product->photo ? asset('storage/' . $product->photo) : asset('default_images.png') }}"
+                            alt="{{ $product->name }} image" />
                         <div class="flex flex-col">
                             <flux:heading>{{ $product->name }}</flux:heading>
                             <flux:text class="max-sm:hidden truncate max-w-xs">[ {{ $product->code }} ]</flux:text>
