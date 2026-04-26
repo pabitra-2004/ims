@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -22,6 +23,9 @@ class ManageInventory extends Component
     public array $filters = [
         'status' => [],
     ];
+
+    #[On('refresh-page')]
+    public function refreshPage(){}
 
     public function updatedSelectAll($checked)
     {
@@ -119,6 +123,7 @@ class ManageInventory extends Component
                     }
                 }
             })
+            ->orderBy('updated_at','desc')
             ->paginate($this->perPage);
 
         // Store current page IDs

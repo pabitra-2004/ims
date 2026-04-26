@@ -8,8 +8,8 @@
 
             {{-- actions --}}
             <div class="justify-self-end">
-                <flux:modal.trigger name="">
-                    <flux:button variant="primary" color="indigo" icon="plus">Add Inventory</flux:button>
+                <flux:modal.trigger name="update-stock">
+                    <flux:button variant="primary" color="indigo" icon="pencil-square">Update Stock</flux:button>
                 </flux:modal.trigger>
             </div>
         </div>
@@ -17,4 +17,6 @@
     </div>
 
     <livewire:manage-inventory />
+    
+    <livewire:update-stock />
 </x-layouts::app>
