@@ -16,8 +16,10 @@ class CustomerFactory extends Factory
      */
     public function definition(): array
     {
+        $gender = $this->faker->randomElement(['male', 'female']);
         return [
-            'name' => ucwords($this->faker->words(2, true)),
+            'name' => $this->faker->name($gender),
+            'gender' => $gender,
             'mobile' => $this->faker->regexify('[6-9]{2}[0-9]{8}'),
             'email' => $this->faker->optional()->email(),
         ];
