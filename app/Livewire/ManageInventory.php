@@ -24,8 +24,8 @@ class ManageInventory extends Component
         'status' => [],
     ];
 
-    #[On('refresh-page')]
-    public function refreshPage(){}
+    #[On('refresh-inventory')]
+    public function refresh() {}
 
     public function updatedSelectAll($checked)
     {
@@ -123,7 +123,7 @@ class ManageInventory extends Component
                     }
                 }
             })
-            ->orderBy('updated_at','desc')
+            ->latest('updated_at')
             ->paginate($this->perPage);
 
         // Store current page IDs

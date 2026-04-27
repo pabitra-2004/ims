@@ -13,6 +13,13 @@ class Inventory extends Model
 
     protected $guarded = [];
 
+    /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['product'];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

@@ -1,8 +1,7 @@
 <flux:modal name="update-stock" flyout position="bottom" variant="floating"
     class="w-full max-w-4xl mx-auto flex flex-col gap-5 
            rounded-t-3xl bg-white shadow-2xl 
-           backdrop:backdrop-blur-md p-5"
-    @close="close">
+           backdrop:backdrop-blur-md p-5">
     <div class="w-1/10 h-1.5 bg-gray-400 rounded-full absolute top-1.5 left-1/2 -translate-x-1/2"></div>
 
     <!-- Content -->
@@ -13,54 +12,46 @@
             <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search_product"
                 placeholder="Search by product name or code..." clearable title="Search by name, code" class="w-full" />
 
-            @if ($search_product)
-                <ul class="space-y-2 max-h-96 overflow-y-auto bg-zing-200">
-                    @foreach ($products as $product)
-                        <li class="bg-gray-200/20 rounded-lg">
-                            <flux:button variant="ghost" size="sm" wire:click="selectProduct({{ $product->id }})"
-                                class="w-full justify-start hover:bg-gray-300">
-                                {{ $product->name }}
-                            </flux:button>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
+            <ul class="space-y-2 max-h-96 overflow-y-auto bg-zing-200">
+                @foreach ($products as $_product)
+                    <li class="bg-gray-200/20 rounded-lg">
+                        <flux:button variant="ghost" size="sm" wire:click="selectProduct({{ $_product->id }})"
+                            class="w-full justify-start hover:bg-gray-300">
+                            {{ $_product->name }}
+                        </flux:button>
+                    </li>
+                @endforeach
+            </ul>
         </div>
 
         <!-- Product Details -->
         <div class="p-4 border border-gray-500 rounded-xl space-y-3">
 
-            @if ($existing_photo)
+            @if ($product?->photo)
                 <div class="flex justify-center">
-                    <flux:avatar size="xl" src="{{ asset('storage/' . $existing_photo) }}" class="shadow-md" />
+                    <flux:avatar size="xl" src="{{ asset('storage/' . $product->photo) }}" class="shadow-md" />
                 </div>
             @endif
 
             <div class="grid grid-cols-2 gap-3">
-                <flux:input type="text" wire:model="code" label="Code" disabled />
-                <flux:input type="text" wire:model="name" label="Name" disabled />
+                <flux:input readonly variant="filled" label="Code" :value="$product?->code" />
+                <flux:input readonly variant="filled" label="Name" :value="$product?->name" />
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <flux:input type="text" wire:model="slug" label="Slug" disabled />
-    
-                <flux:select wire:model="category_id" label="Category" disabled>
-                    @foreach ($categories as $category)
-                        <flux:select.option value="{{ $category['id'] }}">
-                            {{ $category['name'] }}
-                        </flux:select.option>
-                    @endforeach
-                </flux:select>
+                <flux:input readonly variant="filled" label="Slug" :value="$product?->slug" />
+                <flux:input readonly variant="filled" label="Category" :value="$product?->category->name" />
             </div>
 
-            <flux:textarea wire:model="description" label="Description" disabled class="min-h-12!" />
+            <flux:input readonly variant="filled" label="Description" :value="$product?->description"
+                class="min-h-12!" />
             <flux:separator />
             <div>
-                <flux:input type="text" wire:model.live.debounce.350ms="quantity" label="Quantity"  />
+                <flux:input type="text" wire:model.live.debounce.350ms="quantity" label="Quantity" />
             </div>
         </div>
     </div>
 
-    
+
     <div class="flex justify-end gap-3 pt-3 border-t">
         <flux:modal.close>
             <flux:button variant="ghost">Cancel</flux:button>

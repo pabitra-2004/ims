@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Models\Category;
 use App\Models\Inventory;
 use App\Models\Product;
 use Livewire\Component;
@@ -11,70 +10,37 @@ class UpdateStock extends Component
 {
     public ?string $search_product = '';
 
-    public ?int $product_id;
-    public $category_id;
-    public $code;
-    public $name;
-    public $slug;
-    public $description;
-    public $quantity;
-    public $existing_photo = null;
-
-    public $categories = [];
-
-     public function mount()
-    {
-        $products = Product::distinct()->pluck('category_id');
-        $this->categories = Category::select('id', 'name')
-            ->whereIn('id', $products)
-            ->orderBy('name')
-            ->get()
-            ->toArray();
-    }   
+    public $product;
+    public $quantity = '';
 
     public function selectProduct($id)
     {
-        $product = Product::with('inventory')->find($id);
-        $this->product_id = $product->id;
-        $this->code = $product->code;
-        $this->name = $product->name;
-        $this->slug = $product->slug;
-        $this->existing_photo = $product->photo;
-        $this->category_id = $product->category_id;
-        $this->description = $product->description;
-
-        $this->quantity = $product->inventory?->quantity ?? 0;
-        // dd($this->quantity);
+        $this->product = Product::with(['inventory', 'category:id,name'])->find($id);
+        $this->quantity = $this->product->inventory?->quantity ?? 0;
     }
 
     public function save()
     {
-        Inventory::updateOrCreate(
-            ['product_id' => $this->product_id],
-            ['quantity' => $this->quantity]
-        );
+        $inventory = Inventory::where('product_id', $this->product->id)->firstOrNew();
+        $inventory->product_id = $this->product->id;
+        $inventory->quantity = $this->quantity;
+        $inventory->save();
 
-        $this->dispatch('refresh-page');
-        $this->close();
-    }
 
-    public function close()
-    {
-        $this->reset(['search_product', 'category_id', 'product_id', 'code', 'name', 'slug', 'description', 'quantity', 'existing_photo']);
+        $this->dispatch('refresh-inventory');
         $this->modal('update-stock')->close();
+        $this->reset();
     }
 
     public function render()
     {
-        $products = Product::with([
-            'inventory:id,product_id,quantity',
-            'category:id,name',
-        ])
-        ->search($this->search_product)
-        ->get();
-
         return view('livewire.update-stock')->with([
-            'products' => $products,
+            'products' => Product::with([
+                'inventory:id,product_id,quantity',
+                'category:id,name',
+            ])
+                ->search($this->search_product)
+                ->get(),
         ]);
     }
 }
