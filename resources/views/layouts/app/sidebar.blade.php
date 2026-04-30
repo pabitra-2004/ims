@@ -36,6 +36,10 @@
                 <flux:sidebar.item icon="map-pin" :href="route('districts')" wire:navigate>
                     Districts
                 </flux:sidebar.item>
+                <flux:sidebar.item icon="cube" :href="route('customers.index')"
+                    :current="request()->routeIs('customers.index')" wire:navigate>
+                    Customers
+                </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>
 
