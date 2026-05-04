@@ -5,15 +5,23 @@ namespace App\Livewire\Customers;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\State;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class CreateEditCustomer extends Component
 {
+    use WithFileUploads;
     /*--------------------------------------------------------------------------
     | properties
     |--------------------------------------------------------------------------*/
+    #[Validate('image|max:10240')] // 10MB Max
+    public  $photo;
+    public ?string $existing_photo = null;
+
     #[Locked]
     public ?string $customer_id = null;
 
@@ -39,6 +47,7 @@ class CreateEditCustomer extends Component
     public function loadCustomer(Customer $customer)
     {
         $this->customer_id = $customer->id;
+        $this->existing_photo = $customer->photo; 
         $this->name = $customer->name;
         $this->gender = $customer->gender;
         $this->mobile = $customer->mobile;
@@ -53,8 +62,6 @@ class CreateEditCustomer extends Component
             $this->address = $address->address;
             $this->pincode = $address->pin_code;
         }
-
-        // $this->city = $customer->addresses()->city;
 
         $this->modal('create-edit-customer')->show();
     }
@@ -87,6 +94,7 @@ class CreateEditCustomer extends Component
     {
 
         $this->validate([
+            'photo' => [$this->existing_photo ? 'nullable' : 'required', 'image', 'max:10240'], // 10MB Max
             'name' => 'required|string|max:255',
             'gender' => 'required',
             'mobile' => 'required|digits:10',
@@ -94,6 +102,12 @@ class CreateEditCustomer extends Component
         ]);
 
         $customer = Customer::findOrNew($this->customer_id);
+        if($this->photo){
+            if($this->existing_photo){
+                Storage::disk('public')->delete($this->existing_photo);
+            }
+            $customer->photo = $this->photo->store('images/customers', 'public');
+        }
         $customer->name = $this->name;
         $customer->gender = $this->gender;
         $customer->mobile = $this->mobile;
@@ -121,7 +135,7 @@ class CreateEditCustomer extends Component
     |--------------------------------------------------------------------------*/
     public function close()
     {
-        $this->reset('name', 'gender', 'mobile', 'email', 'selected_state', 'selected_district');
+        $this->reset('photo', 'existing_photo', 'name', 'gender', 'mobile', 'email', 'selected_state', 'selected_district', 'city', 'address', 'pincode');
         $this->resetValidation();
     }
 
