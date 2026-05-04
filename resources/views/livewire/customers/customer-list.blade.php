@@ -6,47 +6,21 @@
                     <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
                 @endforeach
             </flux:select>
+        </div>
 
-            <flux:button icon="trash" variant="primary" color="rose" :loading="false" size="sm"
-                :disabled="count($selected) === 0"
-                wire:swal-confirm="{ 
-                        text: 'Are you sure you want to delete this customer?', 
-                        action: 'deleteSelected', 
-                        params: [  ],
-                        buttonsStyling: false,
-                        customClass: {
-                            confirmButton: 'bg-red-500 hover:bg-red-600 text-white font-medium px-5 py-2 rounded-lg transition duration-200',
-                            cancelButton: 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium px-5 py-2 rounded-lg ml-2 transition duration-200',
-                        }, 
-                    }">
-                Delete Selected ({{ count($selected) }})
-            </flux:button>
+        <div class="flex justify-end-safe items-center">
+            <flux:input icon="magnifying-glass" size="sm" wire:model.live.debounce.300ms='search'
+                placeholder="Search Customer..." clearable class="max-w-xs" />
         </div>
     </div>
 
     <flux:table :paginate="$customers" class="w-full table-fixed">
         <flux:table.columns>
-            <flux:table.column class="w-[2%]">
-                <label for="checkboxSlideAll"
-                    class="flex items-center gap-2 text-sm font-medium text-on-surface dark:text-on-surface-dark has-checked:text-on-surface-strong dark:has-checked:text-on-surface-dark-strong has-disabled:cursor-not-allowed has-disabled:opacity-75">
-                    <span class="relative flex items-center">
-                        <input id="checkboxSlideAll" type="checkbox"
-                            class="before:content[''] peer relative size-4 appearance-none overflow-hidden rounded-sm border border-outline bg-surface-alt before:absolute before:inset-0 checked:border-primary checked:before:bg-primary focus:outline-outline-strong checked:focus:outline-primary active:outline-offset-0 disabled:cursor-not-allowed dark:border-outline-dark dark:bg-surface-dark-alt dark:checked:border-primary-dark dark:checked:before:bg-primary-dark dark:focus:outline-outline-dark-strong dark:checked:focus:outline-primary-dark"
-                            wire:model.live="selectAll" />
-
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
-                            stroke="currentColor" fill="none" stroke-width="4"
-                            class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                    </span>
-                </label>
-            </flux:table.column>
-            <flux:table.column class="w-[15%]">Name</flux:table.column>
+            <flux:table.column class="w-[2%]">#</flux:table.column>
+            <flux:table.column class="w-[45%]">Name</flux:table.column>
             <flux:table.column class="w-[7%]">Gender</flux:table.column>
             <flux:table.column class="w-[9%]">Phone</flux:table.column>
             <flux:table.column class="w-[20%]">Email</flux:table.column>
-            <flux:table.column class="w-[30%]">Address</flux:table.column>
             <flux:table.column class="w-[10%]">Last Updated</flux:table.column>
             <flux:table.column class="w-[7%] pr-0 text">Actions</flux:table.column>
         </flux:table.columns>
@@ -55,24 +29,16 @@
             @forelse ($customers as $customer)
                 <flux:table.row :key="$customer->id">
                     <flux:table.cell class="w-[2%]">
-                        <label for="checkboxSlideUp"
-                            class="flex items-center gap-2 text-sm font-medium text-on-surface dark:text-on-surface-dark has-checked:text-on-surface-strong dark:has-checked:text-on-surface-dark-strong has-disabled:cursor-not-allowed has-disabled:opacity-75">
-                            <span class="relative flex items-center">
-                                <input id="checkboxSlideUp" type="checkbox"
-                                    class="before:content[''] peer relative size-4 appearance-none overflow-hidden rounded-sm border border-outline bg-surface-alt before:absolute before:inset-0 checked:border-primary checked:before:bg-primary focus:outline-outline-strong checked:focus:outline-primary active:outline-offset-0 disabled:cursor-not-allowed dark:border-outline-dark dark:bg-surface-dark-alt dark:checked:border-primary-dark dark:checked:before:bg-primary-dark dark:focus:outline-outline-dark-strong dark:checked:focus:outline-primary-dark"
-                                    value="{{ $customer->id }}" wire:model.live="selected" />
-
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
-                                    stroke="currentColor" fill="none" stroke-width="4"
-                                    class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                </svg>
-                            </span>
-                        </label>
+                        {{ $customers->firstItem() + $loop->index }}
                     </flux:table.cell>
 
-                    <flux:table.cell class="w-[15%]">
-                        <div class="capitalize truncate w-full">{{ $customer->name }}</div>
+                    <flux:table.cell class="w-[45%]">
+                        <div class="capitalize truncate w-full flex items-center gap-4">
+                            <flux:avatar size="xl"
+                                src="{{ $customer->photo ? asset('storage/' . $customer->photo) : asset('default_images.png') }}"
+                                alt="{{ $customer->name }}" />
+                            {{ $customer->name }}
+                        </div>
                     </flux:table.cell>
 
                     <flux:table.cell class="w-[7%] capitalize">
@@ -85,12 +51,6 @@
 
                     <flux:table.cell class="w-[20%] truncate">
                         {{ $customer->email }}
-                    </flux:table.cell>
-
-                    <flux:table.cell class="w-[30%]">
-                        <div class="truncate w-full">
-                            {{ $customer->addresses()->first()?->address }}
-                        </div>
                     </flux:table.cell>
 
                     <flux:table.cell class="w-[10%]">
