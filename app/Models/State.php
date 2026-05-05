@@ -24,11 +24,15 @@ class State extends Model
         return $query->whereLike('name', "%{$search}%")
             ->orWhereLike('lgd_code', "%{$search}%")
             ->orWhereLike('state_ut', "%{$search}%");
-
     }
 
     public function districts(): HasMany
     {
         return $this->hasMany(District::class);
+    }
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
     }
 }

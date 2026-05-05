@@ -17,4 +17,14 @@ class Address extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function state(): BelongsTo
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class);
+    }
 }
