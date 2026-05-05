@@ -20,9 +20,11 @@ class AddressFactory extends Factory
     public function definition(): array
     {
         return [
-            'customer_id' => Customer::inRandomOrder()->first()->id,
-            'state_id' => State::inRandomOrder()->first()->id,
-            'district_id' => District::inRandomOrder()->first()->id,
+            'customer_id' => Customer::inRandomOrder()->first()->id ?? Customer::factory(),
+            'state_id' => 36,
+            'district_id' => function (array $attributes) {
+                return District::whereStateId($attributes['state_id'])->inRandomOrder()->first()->id;
+            },
             'city' => $this->faker->city(),
             'address' => $this->faker->address(),
             'pin_code' => $this->faker->postcode(),
