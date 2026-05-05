@@ -20,8 +20,8 @@ class CustomerFactory extends Factory
         return [
             'name' => $this->faker->name($gender),
             'gender' => $gender,
-            'mobile' => $this->faker->regexify('[6-9]{2}[0-9]{8}'),
-            'email' => $this->faker->optional()->email(),
+            'mobile' => $this->faker->unique()->regexify('[6-9]{2}[0-9]{8}'),
+            'email' => $this->faker->unique()->optional()->email(),
         ];
     }
 }
