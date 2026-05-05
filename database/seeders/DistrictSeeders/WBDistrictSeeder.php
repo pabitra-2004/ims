@@ -1,9 +1,10 @@
 <?php
 
-namespace Database\Seeders\Districts;
+namespace Database\Seeders\DistrictSeeders;
 
 use App\Models\State;
 use Illuminate\Database\Seeder;
+
 class WBDistrictSeeder extends Seeder
 {
     /**

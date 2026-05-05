@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders\Districts;
+namespace Database\Seeders\DistrictSeeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 

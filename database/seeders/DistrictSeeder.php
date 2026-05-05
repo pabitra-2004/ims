@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Districts\ODDistrictSeeder;
-use Database\Seeders\Districts\WBDistrictSeeder;
+use Database\Seeders\DistrictSeeders\ODDistrictSeeder;
+use Database\Seeders\DistrictSeeders\WBDistrictSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -16,7 +16,7 @@ class DistrictSeeder extends Seeder
      */
     public function run(): void
     {
-         $this->call([
+        $this->call([
             WBDistrictSeeder::class,
             ODDistrictSeeder::class,
         ]);
