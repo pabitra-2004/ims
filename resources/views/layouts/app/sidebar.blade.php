@@ -19,6 +19,14 @@
                     wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:sidebar.item>
+                <flux:sidebar.group expandable heading="Master Data" class="grid">
+                    <flux:sidebar.item icon="map" :href="route('states')" wire:navigate>
+                        States
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="map-pin" :href="route('districts')" wire:navigate>
+                        Districts
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
                 <flux:sidebar.item icon="squares-2x2" :href="route('categories.index')"
                     :current="request()->routeIs('categories.index')" wire:navigate>
                     Categories
@@ -29,12 +37,6 @@
                 </flux:sidebar.item>
                 <flux:sidebar.item icon="lifebuoy" :href="route('inventory')" wire:navigate>
                     Inventory
-                </flux:sidebar.item>
-                <flux:sidebar.item icon="map" :href="route('states')" wire:navigate>
-                    States
-                </flux:sidebar.item>
-                <flux:sidebar.item icon="map-pin" :href="route('districts')" wire:navigate>
-                    Districts
                 </flux:sidebar.item>
                 <flux:sidebar.item icon="cube" :href="route('customers.index')"
                     :current="request()->routeIs('customers.index')" wire:navigate>
