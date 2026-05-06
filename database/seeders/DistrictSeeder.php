@@ -2,6 +2,11 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\DistrictSeeders\AndamanDistrictSeeder;
+use Database\Seeders\DistrictSeeders\AndhraDistrictSeeder;
+use Database\Seeders\DistrictSeeders\ArunachalDistrictSeeder;
+use Database\Seeders\DistrictSeeders\AssamDistrictSeeder;
+use Database\Seeders\DistrictSeeders\BiharDistrictSeeder;
 use Database\Seeders\DistrictSeeders\ODDistrictSeeder;
 use Database\Seeders\DistrictSeeders\WBDistrictSeeder;
 use Illuminate\Database\Seeder;
@@ -19,6 +24,11 @@ class DistrictSeeder extends Seeder
         $this->call([
             WBDistrictSeeder::class,
             ODDistrictSeeder::class,
+            AndamanDistrictSeeder::class,
+            AndhraDistrictSeeder::class,
+            ArunachalDistrictSeeder::class,
+            AssamDistrictSeeder::class,
+            BiharDistrictSeeder::class,
         ]);
     }
 }
