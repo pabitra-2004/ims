@@ -19,12 +19,12 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         $subTotal = $this->faker->numberBetween(1000, 15000);
-        $discount = $this->faker->optional()->numberBetween(0, 50);
-        $additionalCharges = $this->faker->optional()->numberBetween(7, 50);
+        $discount = $this->faker->optional()->numberBetween(0, 45);
+        $additionalCharges = $this->faker->numberBetween(0, 30);
 
         return [
-            'customer_id' => Customer::inRandomOrder()->first()->id,        
-            'code' => Str::random(10),       
+            'customer_id' => Customer::inRandomOrder()->first()->id ?? Customer::factory(),        
+            'code' => Str::upper(Str::random(10)),        
             'date' => $this->faker->date(),
             'sub_total' => $subTotal,
             'discount' => $discount,

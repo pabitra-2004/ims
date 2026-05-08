@@ -8,9 +8,10 @@
 
             {{-- actions --}}
             <div class="justify-self-end">
-                <a href="{{ route('orders.create-order') }}">
-                    <flux:button variant="primary" color="indigo" icon="plus">Add Orders</flux:button>
-                </a>
+                <flux:button :href="route('orders.create-order')" icon="plus" variant="primary" color="green"
+                    wire:navigate>
+                    Add Orders
+                </flux:button>
             </div>
         </div>
         <flux:separator variant="subtle" class="mt-4" />

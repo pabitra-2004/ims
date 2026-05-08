@@ -136,7 +136,7 @@
                     <!-- product photo, name, description -->
                     <flux:table.cell class="flex items-center gap-3 ">
                         <flux:avatar size="xl"
-                            src="{{ $product->photo ? asset('storage/' . $product->photo) : asset('default_images.png') }}"
+                            src="{{ $product->images ? asset('storage/' . $product->images[0]) : asset('default_images.png') }}"
                             alt="{{ $product->name }}" />
                         <div class="truncate">
                             <flux:heading level="3">
