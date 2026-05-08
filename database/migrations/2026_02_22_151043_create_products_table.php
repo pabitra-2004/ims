@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name')->index();
             $table->string('slug')->unique();
-            $table->string('photo')->nullable();
+            $table->decimal('price', 10, 2);
             $table->longText('description')->nullable();
+            $table->json('images')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

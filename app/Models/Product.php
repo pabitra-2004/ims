@@ -34,6 +34,7 @@ class Product extends Model
     {
         return [
             'is_active' => 'boolean',
+            'images' => 'array',
         ];
     }
 
