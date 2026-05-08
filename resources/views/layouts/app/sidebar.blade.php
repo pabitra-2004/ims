@@ -42,6 +42,10 @@
                     :current="request()->routeIs('customers.index')" wire:navigate>
                     Customers
                 </flux:sidebar.item>
+                <flux:sidebar.item icon="cube" :href="route('orders.index')"
+                    :current="request()->routeIs('orders.index')" wire:navigate>
+                    Orders
+                </flux:sidebar.item>
             </flux:sidebar.group>
         </flux:sidebar.nav>
 

@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('states', 'pages::state-list')->name('states');
     Route::livewire('districts', 'pages::district-list')->name('districts');
     Route::view('customers', 'customers.index')->name('customers.index');
+    Route::view('orders', 'orders.index')->name('orders.index');
 });
 
 require __DIR__ . '/settings.php';
