@@ -23,7 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::livewire('districts', 'pages::district-list')->name('districts');
     Route::view('customers', 'customers.index')->name('customers.index');
     Route::view('orders', 'orders.index')->name('orders.index');
-    Route::livewire('create-orders', 'orders.create-order')->name('orders.create-order');
+    // Route::livewire('create-orders', 'orders.create-order')->name('orders.create-order');
+    Route::view('orders/create', 'orders.create')->name('orders.create');
 });
 
 require __DIR__ . '/settings.php';
