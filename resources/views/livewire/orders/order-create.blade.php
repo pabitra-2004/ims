@@ -4,7 +4,25 @@
             <flux:heading>Products</flux:heading>
         </div>
 
-        <flux:input icon="magnifying-glass" placeholder="Search products" wire:model.live='search' />
+        <div class="flex gap-4">
+            <flux:dropdown>
+                <flux:button icon="funnel" icon:trailing="chevron-down">Category</flux:button>
+
+                <flux:menu>
+                    <flux:menu.checkbox.group wire:model.live="filter.categories">
+                        @foreach ($categories as $category)
+                            <flux:menu.checkbox class="text-wrap" :value="$category['id']">
+                                {{ $category['name'] }}
+                            </flux:menu.checkbox>
+                        @endforeach
+                    </flux:menu.checkbox.group>
+                    <flux:menu.separator />
+                    <flux:menu.item variant="danger" wire:click="clearFilters">Clear</flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
+
+            <flux:input icon="magnifying-glass" placeholder="Search products" wire:model.live='search' />
+        </div>
 
         <div class="flex-1 relative">
             <div class="absolute inset-0 overflow-hidden overflow-y-auto">

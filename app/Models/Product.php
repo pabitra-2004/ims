@@ -54,7 +54,8 @@ class Product extends Model
     #[Scope]
     protected function filter(Builder $query, array $filters)
     {
-        if ($filters['status']) {
+        // if (!empty($filters['status'])) {
+        if (!empty($filters['status'])) {
             $query->whereIn('is_active', array_map(fn($item) => $item === 'active' ? true : false, $filters['status']));
         }
 
