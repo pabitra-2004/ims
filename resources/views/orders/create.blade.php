@@ -9,6 +9,7 @@
         <flux:separator />
 
         <livewire:orders.order-create />
+        <livewire:products.product-quick-view />
     </div>
 
 </x-layouts::app>

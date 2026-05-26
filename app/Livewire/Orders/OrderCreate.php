@@ -13,8 +13,6 @@ use Livewire\Component;
 
 class OrderCreate extends Component
 {
-    public $view_product;
-
     public string $search = '';
 
     public array $filter = [
@@ -38,13 +36,9 @@ class OrderCreate extends Component
             ->toArray();
     }
 
-    public function viewProduct(string $id)
+    public function quickViewProduct(string $id)
     {
-        $this->view_product = Product::query()
-            ->with('category')
-            ->find($id);
-
-        // dd($this->view_product);
+        $this->dispatch('quick-view-product', $id);
     }
 
     #[Computed()]
