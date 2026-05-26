@@ -215,7 +215,7 @@
             </div>
         </div>
         <div class="w-full">
-            <flux:button variant="primary" color="blue" class="w-full">Checkout</flux:button>
+            <flux:button variant="primary" color="blue" class="w-full" wire:click="checkout">Checkout</flux:button>
         </div>
     </div>
 </div>
