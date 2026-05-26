@@ -8,9 +8,9 @@
 
             {{-- actions --}}
             <div class="justify-self-end">
-                <flux:button :href="route('orders.create-order')" icon="plus" variant="primary" color="green"
+                <flux:button :href="route('orders.create')" icon="plus" variant="primary" color="green"
                     wire:navigate>
-                    Add Orders
+                    Create Orders
                 </flux:button>
             </div>
         </div>
