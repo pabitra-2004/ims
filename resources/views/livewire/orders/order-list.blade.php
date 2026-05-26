@@ -37,8 +37,14 @@
             @empty
                 <!-- Empty State -->
                 <flux:table.row>
-                    <flux:table.cell colspan="8" class="text-center py-12 text-red-500">
-                        No data found
+                    <flux:table.cell colspan="12">
+                        <div class="flex flex-1 items-center justify-center flex-col gap-4 h-120">
+                            <img src="{{ asset('no_data_found.png') }}" alt="" class="size-16">
+                            <div class="text-center">
+                                <flux:heading size="xl" variant="subtle">Oops!</flux:heading>
+                                <flux:text size="lg">No data found</flux:text>
+                            </div>
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
             @endforelse
