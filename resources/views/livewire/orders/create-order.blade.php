@@ -1,217 +1,120 @@
-{{-- <div>
-    @dd($products->toArray());
-    <div class="mb-6 w-full">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <flux:heading variant="strong" size="lg" class="font-bold">Create Order</flux:heading>
-                <flux:text variant="subtle">Manage and create customer orders</flux:text>
-            </div>
-
-            <div class="flex gap-3">
-                <flux:input icon="magnifying-glass" size="sm" wire:model.live.debounce.350ms="search"
-                    placeholder="Search Categories..." clearable
-                    class="w-full rounded-xl border-zinc-300" />
-
-                <a href="{{ route('orders.index') }}">
-                    <flux:button icon="arrow-long-left" variant="filled" size="sm">
-                        Back
-                    </flux:button>
-                </a>
-            </div>
+<div class="grid grid-cols-14 gap-6 flex-1 -mb-4 select-none">
+    <div class="h-full flex flex-col rounded-2xl col-span-10 p-6 space-y-4 bg-white shadow-lg">
+        <div>
+            <flux:heading>Products</flux:heading>
         </div>
 
-        <flux:separator class="mt-5" />
-    </div>
-    <div>
-        <div class="w-full grid grid-cols-5 gap-3">
-            @forelse ($products as $product)
-                <flux:card size="sm" class="hover:bg-zinc-50 dark:hover:bg-zinc-700 flex flex-col space-y-3">
+        <div class="flex gap-4">
+            <flux:dropdown>
+                <flux:button icon="funnel" icon:trailing="chevron-down">Category</flux:button>
 
-                    <a href="#" class="rounded-lg overflow-hidden">
-                        <img src="{{ $product->photo ? asset('storage/' . $product->photo) : asset('default_images.png') }}"
-                            alt="{{ $product->name }} image"
-                            class="w-full aspect-3/2 object-cover rounded-lg transition duration-300 hover:scale-105" />
-                    </a>
+                <flux:menu>
+                    <flux:menu.checkbox.group wire:model.live="filter.categories">
+                        @foreach ($categories as $category)
+                            <flux:menu.checkbox class="text-wrap" :value="$category['id']">
+                                {{ $category['name'] }}
+                            </flux:menu.checkbox>
+                        @endforeach
+                    </flux:menu.checkbox.group>
+                    <flux:menu.separator />
+                    <flux:menu.item variant="danger" wire:click="clearFilters">Clear</flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
 
-                    <div>
-                        <h5 class="text-lg text-heading font-semibold tracking-tight">{{ $product->name }}</h5>
-
-                        <div class="flex items-center justify-between mt-1">
-                            <span class="text-xl font-extrabold text-heading">$599</span>
-                            <flux:button size="xs" variant="primary" icon="shopping-cart">Add to cart</flux:button>
-                        </div>
-                    </div>
-                </flux:card>
-            @empty
-                <p>no data found</p>
-            @endforelse
-        </div>
-    </div>
-</div> --}}
-
-
-
-
-
-
-
-
-
-<div>
-    <div class="mb-6 w-full">
-        <div class="flex items-center justify-between gap-3">
-            <div>
-                <flux:heading variant="strong" size="lg" class="font-bold">
-                    Create Order
-                </flux:heading>
-
-                <flux:text variant="subtle">
-                    Manage and create customer orders
-                </flux:text>
-            </div>
-
-            <div class="flex gap-3">
-                <flux:input icon="magnifying-glass" size="sm" wire:model.live.debounce.350ms="search"
-                    placeholder="Search Products..." clearable class="w-full rounded-xl border-zinc-300" />
-
-                <a href="{{ route('orders.index') }}">
-                    <flux:button icon="arrow-long-left" variant="filled" size="sm">
-                        Back
-                    </flux:button>
-                </a>
-            </div>
+            <flux:input icon="magnifying-glass" placeholder="Search products" wire:model.live='search' />
         </div>
 
-        <flux:separator class="mt-5" />
-    </div>
+        <div class="flex-1 relative">
+            <div class="absolute inset-0 overflow-hidden overflow-y-auto -mr-5">
+                <div class="grid grid-cols-4 gap-6 pr-1 pb-1">
+                    @forelse ($this->products as $product)
+                        <div class="space-y-2 border rounded overflow-hidden">
+                            <button type="button" class="contents" wire:click="quickViewProduct({{ $product->id }})">
+                                @isset($product->images[0])
+                                    <img src="{{ asset('storage/' . $product->images[0]) }}"
+                                        class="aspect-square cursor-pointer">
+                                @else
+                                    <img src="{{ asset('default_images.png') }}"
+                                        class="aspect-square object-cover cursor-pointer" title="No image avaliable">
+                                @endisset
+                            </button>
 
-    <div class="grid grid-cols-12 gap-6">
+                            <div class="space-y-2 p-2">
+                                <div class="h-10">
+                                    <p class="text-sm font-medium line-clamp-2">{{ $product->name }}</p>
+                                </div>
+                                <flux:badge size='sm'>{{ $product->category->name }}</flux:badge>
 
-        {{-- Products --}}
-        <div class="{{ count($cart) > 0 ? 'col-span-8' : 'col-span-12' }}">
+                                <div class="flex justify-between items-center">
+                                    <span class="tabular-nums text-sm font-medium">&#8377;
+                                        {{ number_format($product->price) }}</span>
 
-            <div class="grid {{ count($cart) > 0 ? 'grid-cols-4' : 'grid-cols-5' }} gap-4">
-
-                @forelse ($products as $product)
-                    <flux:card size="sm"
-                        class="overflow-hidden p-0! hover:bg-zinc-50 dark:hover:bg-zinc-800 transition">
-
-                        <img src="{{ $product->photo ? asset('storage/' . $product->photo) : asset('default_images.png') }}"
-                            alt="{{ $product->name }}" class="h-40 w-full object-cover" />
-
-                        <div class="p-3 space-y-3">
-
-                            <div>
-                                <flux:heading variant="strong" size="lg">
-                                    {{ $product->name }}
-                                </flux:heading>
-
-                                <flux:text variant="subtle" class="mt-1 line-clamp-2">
-                                    {{ $product->description }}
-                                </flux:text>
-                            </div>
-
-                            <div class="flex items-center justify-between">
-                                <span class="text-lg font-bold">
-                                    ₹ 500
-                                </span>
-
-                                <flux:button size="xs" variant="primary" icon="shopping-cart"
-                                    wire:click="addToCart({{ $product->id }})">
-                                    Add to cart
-                                </flux:button>
-                            </div>
-
-                        </div>
-
-                    </flux:card>
-                @empty
-                    <div class="col-span-full">
-                        <p class="text-center text-zinc-500">
-                            No products found
-                        </p>
-                    </div>
-                @endforelse
-
-            </div>
-        </div>
-
-        @if (count($cart) > 0)
-            <div class="col-span-4">
-
-                <div class="sticky top-4 rounded-xl border  shadow-sm">
-                    <div class="flex items-center justify-between p-4">
-                        <div class="flex items-center gap-3">
-                            <flux:heading variant="strong" size="lg">Shopping Cart</flux:heading>
-                            <flux:badge>{{ count($cart) }} Items</flux:badge>
-                        </div>
-
-                        <flux:button icon="x-mark" variant="subtle" />
-                    </div>
-
-                    <div class="max-h-115 --h-100 border overflow-y-auto px-4">
-                        @foreach ($cart as $item)
-                            <div class="flex gap-3 border-b py-4">
-                                <img src="{{ $item['photo'] ?? asset('default_images.png') }}"
-                                    class="size-20 rounded-lg object-cover border" alt="{{ $item['name'] }}" />
-
-                                <div class="flex flex-1 flex-col justify-between">
-
-                                    <div class="flex items-start justify-between">
-                                        <h4 class="font-medium">
-                                            {{ $item['name'] }}
-                                        </h4>
-
-                                        <p class="font-semibold">
-                                            ₹ 500
-                                        </p>
-                                    </div>
-
-                                    <div class="mt-2 flex items-center justify-between gap-2">
-                                        <div class="flex gap-2 items-center text-gray-300">
-                                            Qty:
-                                            <flux:button icon="minus" size="xs" />
-
-                                            <span class="text-sm font-medium w-8 text-center">
-                                                3
-                                            </span>
-
-                                            <flux:button icon="plus" size="xs" />
-                                        </div>
-
-                                        <flux:link as="button" variant="ghost"
-                                            class="text-blue-400 hover:text-blue-500 cursor-pointer --hover:underline">
-                                            Remove</flux:link>
-                                    </div>
+                                    <flux:button size="xs" icon="shopping-cart" variant="primary" color="indigo"
+                                        wire:click="addToCart('{{ $product->id }}')" class="cursor-pointer">Add
+                                    </flux:button>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
 
-                    <div class=" p-4">
-                        <div class="mb-3 flex items-center justify-between">
-                            <div class="flex flex-col items-start gap-1">
-                                <flux:text>Subtotal</flux:text>
-                                <flux:text>Shipping</flux:text>
-                                <flux:text>Tax</flux:text>
-                                <flux:heading size="sm">Order Total</flux:heading>
-
-                            </div>
-                            <div class="flex flex-col items-start gap-1">
-                                <flux:text> ₹ 10500</flux:text>
-                                <flux:text> ₹ 50</flux:text>
-                                <flux:text> ₹ 700</flux:text>
-                                <flux:heading size="sm"> ₹ 11250</flux:heading>
+                        </div>
+                    @empty
+                        <div class="flex flex-1 items-center justify-center flex-col gap-4 h-108 col-span-4 mr-4">
+                            <img src="{{ asset('no_data_found.png') }}" alt="" class="size-16">
+                            <div class="text-center">
+                                <flux:heading size="xl" variant="subtle">Oops!</flux:heading>
+                                <flux:text size="lg">No data found</flux:text>
                             </div>
                         </div>
-
-                        <flux:button variant="primary" size="sm" class="w-full">Continue Payment</flux:button>
-                    </div>
-
+                    @endforelse
                 </div>
-
             </div>
-        @endif
+        </div>
+    </div>
 
+    <div class="h-full flex flex-col rounded-2xl col-span-4 p-6 space-y-4 bg-white shadow-lg">
+        <div>
+            <flux:heading>Order summary</flux:heading>
+        </div>
+
+        <div class="flex-1 relative">
+            <div class="absolute inset-0 overflow-hidden overflow-y-auto -mr-5 ">
+                <div class="divide-y divide-neutral-300 pr-3">
+                    @foreach ($selected_products as $index => $product)
+                        <div class="py-5 flex gap-4">
+                            @isset($product['image'])
+                                <img src="{{ asset('storage/' . $product['image']) }}"
+                                    class="aspect-square w-22 rounded-xs shadow-sm">
+                            @else
+                                <img src="{{ asset('default_images.png') }}"
+                                    class="aspect-square w-22 rounded-xs shadow-sm">
+                            @endisset
+
+                            <div class="flex-1 inline-flex flex-col space-y-1">
+                                <div class="flex-1 inline-flex justify-between gap-4">
+                                    <p class="text-sm font-medium line-clamp-2">{{ $product['name'] }}</p>
+                                    <span class="tabular-nums text-base font-medium flex-none text-nowrap">&#8377;
+                                        {{ number_format($product['price']) }}</span>
+                                </div>
+                                <div class="flex-none">
+                                    <flux:badge size='sm'>{{ $product['category'] }}</flux:badge>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-gray-500 mr-2 inline-flex items-center">
+                                        Qty:
+                                        <input type="number" min='1'
+                                            x-on:input="$el.value = $el.value.replace(/^0+/, '1')"
+                                            x-on:keydown="if(['-', '+', 'e', 'E', '.'].includes($event.key)) $event.preventDefault()"
+                                            wire:model.live="selected_products.{{ $index }}.qty"
+                                            class="max-w-15 w-full px-2 border-none focus:outline-none" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        <div class="w-full">
+            <flux:button variant="primary" color="blue" class="w-full" wire:click="checkout">Checkout</flux:button>
+        </div>
     </div>
 </div>
