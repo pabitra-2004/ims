@@ -4,23 +4,27 @@ namespace App\Livewire\Orders;
 
 use App\Models\Category;
 use App\Models\Product;
+use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class OrderCreate extends Component
 {
+    public $view_product;
+
     public string $search = '';
 
     public array $filter = [
         'categories' => [],
     ];
+
     public $categories = [];
-   
 
     public array $selected_products = [];
 
     public function mount()
     {
+
         Product::inRandomOrder()->take(4)->get()->each(fn ($product) => $this->addToCart($product));
 
         $products = Product::select('category_id')->distinct();
@@ -31,6 +35,15 @@ class OrderCreate extends Component
             ->toArray();
     }
 
+    public function viewProduct(string $id)
+    {
+        $this->view_product = Product::query()
+            ->with('category')
+            ->find($id);
+        
+        // dd($this->view_product);
+    }
+
     #[Computed()]
     public function products()
     {
@@ -39,8 +52,6 @@ class OrderCreate extends Component
 
     public function addToCart(Product $product)
     {
-        // dd($product_id);
-
         $key = array_search($product->id, array_column($this->selected_products, 'id'));
 
         if ($key === false) {
@@ -52,12 +63,15 @@ class OrderCreate extends Component
                 'category' => $product->category->name ?? 'N/A',
                 'qty' => 1,
             ];
+
         } else {
             $this->selected_products[$key]['qty']++;
         }
+        Flux::modals()->close();
     }
 
-    public function clearFilters(){
+    public function clearFilters()
+    {
         $this->filter['categories'] = [];
     }
 
