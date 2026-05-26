@@ -31,7 +31,7 @@
 
                     @foreach ($this->products as $product)
                         <div class="space-y-2 border rounded overflow-hidden">
-                            <flux:modal.trigger name="view-product" wire:click="viewProduct({{ $product->id }})">
+                            <button type="button" class="contents" wire:click="quickViewProduct({{ $product->id }})">
                                 @isset($product->images[0])
                                     <img src="{{ asset('storage/' . $product->images[0]) }}"
                                         class="aspect-square cursor-pointer">
@@ -39,7 +39,7 @@
                                     <img src="{{ asset('default_images.png') }}"
                                         class="aspect-square object-cover cursor-pointer" title="No image avaliable">
                                 @endisset
-                            </flux:modal.trigger>
+                            </button>
 
                             <div class="space-y-2 p-2">
                                 <div class="h-10">
@@ -59,113 +59,6 @@
 
                         </div>
                     @endforeach
-
-
-                    <flux:modal name="view-product" flyout variant="floating" position="bottom" class="w-7xl">
-                        @if ($this->view_product)
-                            <div class="space-y-6">
-                                <div>
-                                    <flux:heading size="lg">
-                                        Product Details
-                                    </flux:heading>
-
-                                    <flux:text class="mt-1 text-sm">
-                                        Here you can manage your products
-                                    </flux:text>
-                                </div>
-
-                                <flux:separator />
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="flex gap-2 border border-gray-300 rounded-xl p-3">
-                                        <div class="flex flex-col gap-2 h-96 overflow-auto p-1">
-
-                                            @forelse(array_slice($this->view_product->images ?? [], 1) as $image)
-                                                <img src="{{ asset('storage/' . $image) }}"
-                                                    class="w-20 h-20 object-cover rounded-lg cursor-pointer">
-                                            @empty
-                                                <img src="{{ asset('default_images.png') }}"
-                                                    class="w-20 h-20 object-cover rounded-lg border">
-                                            @endforelse
-                                        </div>
-
-                                        <div class="flex-1">
-                                            <img src="{{ !empty($this->view_product->images[0])
-                                                ? asset('storage/' . $this->view_product->images[0])
-                                                : asset('default_images.png') }}"
-                                                class="w-full h-96 object-cover rounded-lg shadow-sm">
-                                        </div>
-                                    </div>
-
-                                    <div class="flex flex-col gap-4 rounded-xl pl-4">
-                                        <div class="flex justify-between gap-4">
-                                            <flux:heading size="xl">
-                                                {{ $this->view_product?->name }}
-                                            </flux:heading>
-
-                                            @if ($this->view_product->is_active)
-                                                <flux:badge color="emerald" variant="filled">
-                                                    <div class="size-1.5 rounded-full bg-green-400 mr-1.5"></div>Active
-                                                </flux:badge>
-                                            @else
-                                                <flux:badge color="pink" variant="filled">Inactive</flux:badge>
-                                            @endif
-                                        </div>
-                                        {{-- <div class="flex divide-x  divide-neutral-300 justify-between">
-                                            <span>
-                                                Last Updated
-                                                {{ $this->view_product->category->updated_at->format('d M Y, h:i A') ?? 'N/A' }}
-                                            </span>
-                                            <span>
-                                                Category
-                                                {{ $this->view_product->category->name ?? 'N/A' }}
-                                            </span>
-                                            <span>
-                                                Price
-                                                ₹{{ number_format($this->view_product->price) }}
-
-                                            </span>
-                                        </div> --}}
-                                        <div class="flex items-center divide-x divide-neutral-300">
-
-                                            <div class="flex-1 px-4 py-3">
-                                                <span>Last Updated</span>
-                                                <p class="mt-1 text-sm font-semibold">
-                                                    {{ optional($this->view_product->category->updated_at)->format('d M Y, h:i A') ?? 'N/A' }}
-                                                </p>
-                                            </div>
-
-                                            <div class="flex-1 px-4 py-3">
-                                                <span>Category</span>
-                                                <p class="mt-1 text-sm font-semibold ">
-                                                    {{ $this->view_product->category->name ?? 'N/A' }}
-                                                </p>
-                                            </div>
-
-                                            <div class="flex-1 px-4 py-3">
-                                                <span>Price</span>
-                                                <p class="mt-1 text-lg font-bold">
-                                                    ₹{{ number_format($this->view_product->price) }}
-                                                </p>
-                                            </div>
-
-                                        </div>
-                                        <flux:text class="mt-2 text-justify">
-                                            {{ $this->view_product?->description }}
-                                        </flux:text>
-
-                                        <div>
-                                            <flux:button variant="primary"
-                                                wire:click="addToCart({{ $this->view_product?->id }})">
-                                                Add To Cart
-                                            </flux:button>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </div>
-                        @endif
-                    </flux:modal>
                 </div>
             </div>
         </div>
