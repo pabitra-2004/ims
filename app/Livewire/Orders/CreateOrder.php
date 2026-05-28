@@ -12,26 +12,17 @@ use Livewire\Component;
 class CreateOrder extends Component
 {
     public string $search = '';
-
     public array $filter = [
         'categories' => [],
     ];
-
     public $categories = [];
-
     public array $selected_products = [];
 
     public function mount()
     {
+        Product::inRandomOrder()->take(4)->get()->each(fn ($product) => $this->addToCart($product));
 
-        Product::inRandomOrder()->take(4)->get()->each(fn($product) => $this->addToCart($product));
-
-        $products = Product::select('category_id')->distinct();
-        $this->categories = Category::select('id', 'name')
-            ->whereIn('id', $products)
-            ->orderBy('name')
-            ->get()
-            ->toArray();
+        $this->categories = Category::select('id', 'name')->orderBy('name')->get()->toArray();
     }
 
     public function quickViewProduct(string $id)
@@ -63,16 +54,20 @@ class CreateOrder extends Component
         }
     }
 
+    public function removeProduct(int $index)
+    {
+        unset($this->selected_products[$index]);
+        $this->selected_products = array_values($this->selected_products);
+    }
+
     public function clearFilters()
     {
         $this->filter['categories'] = [];
     }
 
-
     public function checkout()
     {
-
-        $order = new Order();
+        $order = new Order;
         $order->code = now()->timestamp;
         $order->customer_id = Customer::inRandomOrder()->first()->id;
         $order->date = now();
