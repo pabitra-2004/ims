@@ -97,7 +97,7 @@
                                 <div class="flex-none">
                                     <flux:badge size='sm'>{{ $product['category'] }}</flux:badge>
                                 </div>
-                                <div>
+                                <div class="flex justify-between items-center gap-2">
                                     <label class="text-sm font-medium text-gray-500 mr-2 inline-flex items-center">
                                         Qty:
                                         <input type="number" min='1'
@@ -106,6 +106,9 @@
                                             wire:model.live="selected_products.{{ $index }}.qty"
                                             class="max-w-15 w-full px-2 border-none focus:outline-none" />
                                     </label>
+
+                                    <flux:button icon="trash" size="xs" variant="primary" color="rose"
+                                        wire:click="removeProduct({{ $index }})" />
                                 </div>
                             </div>
                         </div>
