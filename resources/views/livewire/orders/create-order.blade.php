@@ -25,8 +25,8 @@
         </div>
 
         <div class="flex-1 relative">
-            <div class="absolute inset-0 overflow-hidden overflow-y-auto -mr-5">
-                <div class="grid grid-cols-4 gap-6 pr-1 pb-1">
+            <div class="absolute inset-0 overflow-hidden overflow-y-auto scrollbar-thin">
+                <div class="grid grid-cols-4 gap-6">
                     @forelse ($this->products as $product)
                         <div class="space-y-2 border rounded overflow-hidden">
                             <button type="button" class="contents" wire:click="quickViewProduct({{ $product->id }})">
@@ -57,7 +57,7 @@
 
                         </div>
                     @empty
-                        <div class="flex flex-1 items-center justify-center flex-col gap-4 h-108 col-span-4 mr-4">
+                        <div class="absolute inset-0 --bg-red-600 flex flex-col items-center justify-center gap-4">
                             <img src="{{ asset('no_data_found.png') }}" alt="" class="size-16">
                             <div class="text-center">
                                 <flux:heading size="xl" variant="subtle">Oops!</flux:heading>

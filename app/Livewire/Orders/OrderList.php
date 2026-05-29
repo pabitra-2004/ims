@@ -13,7 +13,7 @@ class OrderList extends Component
     public function render()
     {
         return view('livewire.orders.order-list', [
-            'orders' => Order::with(['product', 'customer'])
+            'orders' => Order::with(['customer'])
                 ->latest('updated_at')
                 ->paginate(10)
         ]);
