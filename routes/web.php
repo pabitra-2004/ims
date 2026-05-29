@@ -13,6 +13,8 @@ Route::view('dashboard', 'dashboard')
 Route::middleware('auth')->group(function () {
     Route::view('categories', 'categories.index')->name('categories.index');
     Route::view('products', 'products.index')->name('products.index');
+    Route::livewire('product-view/{product_id}', 'products.product-view')->name('products.product-view');
+
     Route::view('inventory', 'inventory')->name('inventory');
     Route::livewire('states', 'pages::state-list')->name('states');
     Route::livewire('districts', 'pages::district-list')->name('districts');
