@@ -73,6 +73,12 @@ class ProductList extends Component
         }
     }
 
+
+    public function redirectToView(int $product_id)
+    {
+        return redirect()->route('products.product-view', $product_id);
+    }
+
     public function render()
     {
         return view(

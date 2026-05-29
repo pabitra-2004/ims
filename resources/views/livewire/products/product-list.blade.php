@@ -91,7 +91,7 @@
                 Code
             </flux:table.column>
 
-            <flux:table.column class="w-[35%]" sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
+            <flux:table.column class="w-[33%]" sortable :sorted="$sortBy === 'name'" :direction="$sortDirection"
                 wire:click="sort('name')">
                 Name
             </flux:table.column>
@@ -113,7 +113,7 @@
                 Last Updated
             </flux:table.column>
 
-            <flux:table.column class="w-[6%]">
+            <flux:table.column class="w-[8%]">
                 Actions
             </flux:table.column>
         </flux:table.columns>
@@ -197,6 +197,10 @@
 
                     <!-- Actions -->
                     <flux:table.cell>
+
+                        <flux:button :loading="false" size="xs" icon="eye" variant="primary"
+                            color="emerald" class="mr-1.5" tooltip="View"
+                            wire:click="redirectToView({{ $product->id }})" />
 
                         <flux:button :loading="false" size="xs" icon="pencil-square" variant="primary"
                             color="indigo" class="mr-1.5" tooltip="Edit"
