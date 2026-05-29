@@ -1,85 +1,101 @@
 <flux:modal name="create-edit-product" flyout position="bottom" variant="floating" @close="close"
-    class="backdrop:backdrop-blur-sm rounded-t-3xl">
+    class="relative p-4 border sm:p-6 rounded-t-3xl bg-white/95 dark:bg-zinc-900/95 text-zinc-800 dark:text-zinc-100 backdrop-blur-xl border-zinc-200/60 dark:border-zinc-700/60">
+    <div class="absolute left-1/2 top-1.5 h-1.5 w-20 sm:w-28 -translate-x-1/2 rounded-full bg-zinc-300/80 shadow-lg dark:bg-zinc-600/80"></div>
 
-    <div class="w-1/5 rounded-full h-2 shadow bg-black/45 absolute top-1.5 left-1/2 -translate-x-1/2"></div>
-
-    <form wire:submit="saveProduct" class="space-y-6 select-none" autocomplete="off">
+    <form wire:submit="saveProduct" class="space-y-6 select-none " autocomplete="off">
         <div>
-            <flux:heading size="lg">{{ $product_id ? 'Update' : 'Create' }} Product</flux:heading>
-            <flux:text class="mt-1.5">Enter details to {{ $product_id ? 'update the' : 'add a new' }} product.
+            <flux:heading class="text-lg sm:text-xl">{{ $product_id ? 'Update' : 'Create' }} Product</flux:heading>
+            <flux:text class="mt-1.5 text-zinc-500 dark:text-zinc-400">Enter details to {{ $product_id ? 'update the' : 'add a new' }} product.
             </flux:text>
         </div>
-        <div class="flex w-full gap-10">
+        
+        <div class="grid w-full grid-cols-1 gap-4 lg:grid-cols-12">
 
-            <div class="w-96">
-                <label class="relative border-0 p-0 bg-transparent" label="Upload files">
-                    <input type="file" wire:model='photo' wire:ignore="" dclass="sr-only" tabindex="-1"
-                        style="position: absolute; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border: 0px;">
+            <div class="lg:col-span-4">
+                <div class="p-4 bg-white border shadow-sm border-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 rounded-xl">
+                    <flux:heading size="lg" variant="strong">Product Images
+                        <flux:badge size="sm" class="ml-1">Required</flux:badge>
+                    </flux:heading>
 
-                    <div class="w-full aspect-4/5 overflow-hidden flex flex-col items-center justify-center rounded-lg border-dashed border-zinc-200 dark:border-white/10 border-2 bg-zinc-50 dark:bg-white/10 transition-colors in-data-dragging:bg-zinc-100 in-data-dragging:border-zinc-300 dark:in-data-dragging:bg-white/15 dark:in-data-dragging:border-white/20 [[disabled]_&amp;]:opacity-75 [[disabled]_&amp;]:pointer-events-none"
-                        tabindex="0">
-                        @php
-                            $imgsrc = $photo
-                                ? $photo->temporaryUrl()
-                                : ($existing_photo
-                                    ? asset('storage/' . $existing_photo)
-                                    : null);
-                        @endphp
-                        @if ($imgsrc)
-                            <img src="{{ $imgsrc }} "
-                                class="object-cover object-center flex-1 hover:cursor-pointer"
-                                alt="{{ $name }} image" title="click to change photo">
+                    <div class="w-full mt-4">
+                        @if (empty($existing_images) && empty($images))
+                            <div>
+                                <label class="flex flex-col items-center justify-center gap-3 p-4 transition-all border rounded-lg shadow-sm cursor-pointer sm:p-6 border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-800/80 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700/80 ">
+                                    <flux:input type="file" wire:model="images" multiple class="hidden" />
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-12">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 3.75a6 6 0 0 0-5.98 6.496A5.25 5.25 0 0 0 6.75 20.25H18a4.5 4.5 0 0 0 2.206-8.423 3.75 3.75 0 0 0-4.133-4.303A6.001 6.001 0 0 0 10.5 3.75Zm2.03 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v4.94a.75.75 0 0 0 1.5 0v-4.94l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z" />
+                                    </svg>
+
+                                    <div>
+                                        <flux:heading class="tracking-wide">Drop files here or click to browse</flux:heading>
+                                        <flux:text class="mt-2 tracking-wide">JPG, PNG, GIF up to 2MB</flux:text>
+                                    </div>
+                                </label>
+                            </div>
+                            <flux:error name="images" />
                         @else
-                            <div class="flex flex-col items-center gap-2 py-5 px-6 sm:py-10 sm:px-16">
-                                <svg class="mb-4 shrink-0 [:where(&amp;)]:size-6 text-zinc-400 dark:text-white/60 transition [[disabled]:hover_&amp;]:text-zinc-400 dark:[[disabled]:hover_&amp;]:text-white/60 in-data-dragging:text-zinc-800 dark:in-data-dragging:text-white [[data-flux-file-upload-trigger]:hover_&amp;]:text-zinc-800 dark:[[data-flux-file-upload-trigger]:hover_&amp;]:text-white in-data-loading:opacity-0"
-                                    data-flux-icon="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                    fill="currentColor" aria-hidden="true" data-slot="icon">
-                                    <path fill-rule="evenodd"
-                                        d="M10.5 3.75a6 6 0 0 0-5.98 6.496A5.25 5.25 0 0 0 6.75 20.25H18a4.5 4.5 0 0 0 2.206-8.423 3.75 3.75 0 0 0-4.133-4.303A6.001 6.001 0 0 0 10.5 3.75Zm2.03 5.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 1 0 1.06 1.06l1.72-1.72v4.94a.75.75 0 0 0 1.5 0v-4.94l1.72 1.72a.75.75 0 1 0 1.06-1.06l-3-3Z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
+                            <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                                @foreach ($existing_images as $index => $image)
+                                    <div class="relative w-24 h-24 overflow-hidden transition-all duration-300 ease-in-out bg-white border rounded-lg shadow-sm dark:bg-zinc-800 aspect-square group hover:scale-105 border-zinc-300 dark:border-zinc-700">
+                                        <img src="{{ Storage::url($image) }}" class="object-cover size-full">
 
-                                <div
-                                    class="text-sm font-medium text-zinc-800 dark:text-white cursor-default [[disabled]_&amp;]:opacity-75">
-                                    Drop files here or click to browse
-                                </div>
+                                        <div class="absolute inset-0 flex items-center justify-center transition duration-200 opacity-0 bg-black/50 group-hover:opacity-100">
+                                            <flux:button wire:click="removeImage({{ $index }})" icon="trash" loading="false" variant="primary" color="rose" size="sm" class="cursor-pointer" />
+                                        </div>
+                                    </div>
+                                @endforeach
 
-                                <div class="relative text-zinc-500 dark:text-white/60 cursor-default text-sm">
-                                    JPG, PNG, GIF up to 10MB
-                                </div>
+                                @foreach ($images ?? [] as $image)
+                                    <div
+                                        class="relative w-24 h-24 overflow-hidden transition-all duration-300 ease-in-out bg-white border rounded-lg shadow-sm dark:bg-zinc-800 aspect-square group hover:scale-105 border-zinc-300 dark:border-zinc-700">
+                                        <img src="{{ $image->temporaryUrl() }}" alt="Preview"
+                                            class="object-cover size-full">
+                                    </div>
+                                @endforeach
+
+                                <label class="flex flex-wrap items-center justify-center w-24 h-24 transition-all duration-300 ease-in-out border rounded-lg cursor-pointer hover:scale-105 group border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700">
+                                    <flux:input type="file" wire:model="images" multiple class="hidden" />
+
+                                    <flux:avatar icon="plus" circle class="p-4 transition group-hover:scale-105 bg-zinc-200 dark:bg-zinc-600" />
+                                </label>
                             </div>
                         @endif
+                        <flux:error name="images" />
                     </div>
-
-                </label>
-                <flux:error name="photo" />
+                </div>
             </div>
 
-            <div class="flex-1 space-y-6">
-                <flux:input type="text" wire:model="code" label="Code" placeholder="Product code (e.g., 1FM2A3)" />
-                <flux:input type="text" wire:model.blur.live="name" label="Name" placeholder="Product name"
-                    autocomplete="off" />
+            <div class="lg:col-span-8 ">
+                <div class="p-4 space-y-6 bg-white border shadow-sm sm:p-6 rounded-xl border-zinc-200 dark:border-zinc-700 dark:bg-zinc-800">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 ">
+                        <flux:input type="text" wire:model="code" label="Code" badge="Required" placeholder="Product code (e.g., FMA26483)" />
+                        <flux:input type="text" wire:model.blur.live="name" label="Name" badge="Required" placeholder="Product name" autocomplete="off" />
+                    </div>
 
-                <flux:input type="text" wire:model="slug" label="Slug" placeholder="slug (e.g., water-bottle)" />
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <flux:input type="text" wire:model="slug" label="Slug" badge="Required" placeholder="slug (e.g., water-bottle)" />
 
-                <flux:select wire:model="category_id" label="Category">
-                    <flux:select.option>Choose Category...</flux:select.option>
-                    @foreach ($categories as $index => $category)
-                        <flux:select.option value="{{ $index }}">{{ $category }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                        <flux:select wire:model="category_id" label="Category" badge="Required" placeholder="Choose category...">
+                            @foreach ($categories as $index => $category)
+                                <flux:select.option value="{{ $index }}">{{ $category }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <flux:input type="number" wire:model="price" label="Price" badge="Required" placeholder="Enter product price" />
+                            
+                        <flux:input disabled label="Test" placeholder="Disabled" />
+                    </div>
 
-                <flux:textarea wire:model="description" label="Description" placeholder="Enter description here..."
-                    badge="Optional" />
+                    <flux:textarea wire:model="description" label="Description" placeholder="Enter description here..." badge="Optional" />
+                </div>
             </div>
         </div>
 
-        <div class="flex">
-            <flux:spacer />
-
-            <flux:button type="submit" variant="primary" class="px-6">
-                Save Product
-            </flux:button>
+        <div class="flex justify-end pt-4 border-t border-zinc-300 dark:border-zinc-700">
+            <flux:button type="submit" variant="primary" class="w-full px-6 transition-all duration-300 sm:w-auto">Save Product</flux:button>
         </div>
     </form>
 </flux:modal>
