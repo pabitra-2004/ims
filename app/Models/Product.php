@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductFactory> */
+    /** @use HasFactory<ProductFactory> */
     use HasFactory;
 
     protected $guarded = [];
@@ -42,7 +43,13 @@ class Product extends Model
      * Scope a query to search products by code, name and slug.
      */
     #[Scope]
-    protected function search(Builder $query, $search)
+    protected function active(Builder $query)
+    {
+        $query->where('is_active', true);
+    }
+
+    #[Scope]
+    protected function search(Builder $query, string $search)
     {
         if ($search) {
             $query->whereLike('code', "%{$search}%")
