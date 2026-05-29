@@ -18,11 +18,13 @@ class CreateOrder extends Component
     public $categories = [];
     public array $selected_products = [];
 
+    public string $view = 'livewire.orders.create-order';
+
     public function mount()
     {
-        Product::inRandomOrder()->take(4)->get()->each(fn ($product) => $this->addToCart($product));
+        Product::inRandomOrder()->take(4)->get()->each(fn($product) => $this->addToCart($product));
 
-        $this->categories = Category::select('id', 'name')->orderBy('name')->get()->toArray();
+        $this->categories = Category::select(['id', 'name'])->orderBy('name', 'asc')->get()->toArray();
     }
 
     public function quickViewProduct(string $id)
@@ -67,41 +69,43 @@ class CreateOrder extends Component
 
     public function checkout()
     {
-        $order = new Order;
-        $order->code = now()->timestamp;
-        $order->customer_id = Customer::inRandomOrder()->first()->id;
-        $order->date = now();
-        $order->sub_total = collect($this->selected_products)->sum(function (array $product) {
-            return $product['price'] * $product['qty'];
-        });
-        $order->total = $order->sub_total;
-        $order->save();
+        $this->view = 'livewire.orders.partials.confirm-order';
 
-        // 1. normal save
-        // foreach ($this->selected_products as $product) {
-        //     $orderDetails = new OrderDetail();
-        //     $orderDetails->order_id = $order->id;
-        //     $orderDetails->product_id = $product['id'];
-        //     $orderDetails->price = $product['price'];
-        //     $orderDetails->quantity = $product['qty'];
-        //     $orderDetails->save();
-        // }
+        // $order = new Order;
+        // $order->code = now()->timestamp;
+        // $order->customer_id = Customer::inRandomOrder()->first()->id;
+        // $order->date = now();
+        // $order->sub_total = collect($this->selected_products)->sum(function (array $product) {
+        //     return $product['price'] * $product['qty'];
+        // });
+        // $order->total = $order->sub_total;
+        // $order->save();
 
-        // 2. save using relation
-        $order_details = array_map(function ($product) {
-            return [
-                'product_id' => $product['id'],
-                'price' => $product['price'],
-                'quantity' => $product['qty'],
-            ];
-        }, $this->selected_products);
-        $order->orderDetails()->createMany($order_details);
+        // // 1. normal save
+        // // foreach ($this->selected_products as $product) {
+        // //     $orderDetails = new OrderDetail();
+        // //     $orderDetails->order_id = $order->id;
+        // //     $orderDetails->product_id = $product['id'];
+        // //     $orderDetails->price = $product['price'];
+        // //     $orderDetails->quantity = $product['qty'];
+        // //     $orderDetails->save();
+        // // }
 
-        $this->dispatch('toast-fire', type: 'success', message: 'Order created.');
+        // // 2. save using relation
+        // $order_details = array_map(function ($product) {
+        //     return [
+        //         'product_id' => $product['id'],
+        //         'price' => $product['price'],
+        //         'quantity' => $product['qty'],
+        //     ];
+        // }, $this->selected_products);
+        // $order->orderDetails()->createMany($order_details);
+
+        // $this->dispatch('toast-fire', type: 'success', message: 'Order created.');
     }
 
     public function render()
     {
-        return view('livewire.orders.create-order');
+        return view($this->view);
     }
 }
