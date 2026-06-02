@@ -51,7 +51,6 @@
                                 <flux:heading class="font-semibold text-sm text-zinc-600"># {{ $order->code }}
                                 </flux:heading>
                                 <flux:text class="text-sm font-medium">{{ $order->created_at->format('F j, Y g:i A') }}
-                                    {{-- <flux:text class="text-sm font-medium">{{ $order->created_at->toDateTimeString() }} --}}
                                 </flux:text>
                             </div>
                         </div>

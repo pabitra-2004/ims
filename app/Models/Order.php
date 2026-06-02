@@ -11,9 +11,11 @@ class Order extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
+
     protected $guarded = [];
+
     protected $casts = [
-        'date' => 'datetime',
+        'date' => 'date',
     ];
 
     public function customer(): BelongsTo
