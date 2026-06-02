@@ -12,17 +12,20 @@ use Livewire\Component;
 class CreateOrder extends Component
 {
     public string $search = '';
+
     public array $filter = [
         'categories' => [],
     ];
+
     public $categories = [];
+
     public array $selected_products = [];
 
     public string $view = 'livewire.orders.create-order';
 
     public function mount()
     {
-        Product::inRandomOrder()->take(4)->get()->each(fn($product) => $this->addToCart($product));
+        Product::inRandomOrder()->take(4)->get()->each(fn ($product) => $this->addToCart($product));
 
         $this->categories = Category::select(['id', 'name'])->orderBy('name', 'asc')->get()->toArray();
     }
@@ -69,6 +72,12 @@ class CreateOrder extends Component
 
     public function checkout()
     {
+        if (empty($this->selected_products)) {
+            $this->dispatch('toast-fire', type: 'error', message: 'Please add products');
+
+            return;
+        }
+
         $this->view = 'livewire.orders.partials.confirm-order';
 
         // $order = new Order;
@@ -102,6 +111,41 @@ class CreateOrder extends Component
         // $order->orderDetails()->createMany($order_details);
 
         // $this->dispatch('toast-fire', type: 'success', message: 'Order created.');
+    }
+
+    #[Computed()]
+    public function subTotal()
+    {
+        return collect($this->selected_products)->sum(function (array $product) {
+            return $product['price'] * $product['qty'];
+        });
+    }
+
+    public function placeOrder()
+    {
+        if (empty($this->selected_products)) {
+            return;
+        }
+        $order = new Order;
+        $order->code = now()->timestamp;
+        $order->customer_id = Customer::inRandomOrder()->first()->id;
+        $order->date = now();
+        $order->sub_total = $this->subTotal;
+        $order->total = $order->sub_total;
+        $order->save();
+
+        $order_details = array_map(function ($product) {
+            return [
+                'product_id' => $product['id'],
+                'price' => $product['price'],
+                'quantity' => $product['qty'],
+            ];
+        }, $this->selected_products);
+        $order->orderDetails()->createMany($order_details);
+
+        $this->dispatch('toast-fire', type: 'success', message: 'Order created.');
+
+        return redirect()->route('orders.index');
     }
 
     public function render()

@@ -25,7 +25,7 @@
         </div>
 
         <div class="flex-1 relative">
-            <div class="absolute inset-0 overflow-hidden overflow-y-auto scrollbar-thin">
+            <div class="absolute inset-0 overflow-hidden overflow-y-auto scrollbar-thin scroll-smooth">
                 <div class="grid grid-cols-4 gap-6">
                     @forelse ($this->products as $product)
                         <div class="space-y-2 border rounded overflow-hidden">
@@ -76,7 +76,7 @@
         </div>
 
         <div class="flex-1 relative">
-            <div class="absolute inset-0 overflow-hidden overflow-y-auto -mr-5 ">
+            <div class="absolute inset-0 overflow-hidden overflow-y-auto --mr-5 scrollbar-thin scrollbar-gutter-stable">
                 <div class="divide-y divide-neutral-300 pr-3">
                     @foreach ($selected_products as $index => $product)
                         <div class="py-5 flex gap-4">
