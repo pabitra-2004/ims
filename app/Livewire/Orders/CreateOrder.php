@@ -23,11 +23,18 @@ class CreateOrder extends Component
 
     public string $view = 'livewire.orders.create-order';
 
+    public string $phone = '';
+    public string $email = '';
+    public string $name = '';
+    public string $gender = 'male';
+
     public function mount()
     {
-        Product::inRandomOrder()->take(4)->get()->each(fn ($product) => $this->addToCart($product));
+        Product::inRandomOrder()->take(4)->get()->each(fn($product) => $this->addToCart($product));
 
         $this->categories = Category::select(['id', 'name'])->orderBy('name', 'asc')->get()->toArray();
+
+        $this->view = 'livewire.orders.partials.confirm-order'; // for testing
     }
 
     public function quickViewProduct(string $id)
@@ -126,9 +133,27 @@ class CreateOrder extends Component
         if (empty($this->selected_products)) {
             return;
         }
+
+        $customer = Customer::firstOrNew(['mobile' => $this->phone]);
+        $customer->name = $this->name;
+        $customer->mobile = $this->phone;
+        $customer->email = $this->email;
+        $customer->gender = $this->gender;
+        $customer->save();
+
+        // $customer = Customer::updateOrCreate([
+        //     'mobile' => $this->phone,
+        // ], [
+        //     'name' => $this->name,
+        //     'mobile' => $this->phone,
+        //     'email' => $this->email,
+        //     'gender' => $this->gender,
+        // ]);
+
+
         $order = new Order;
         $order->code = now()->timestamp;
-        $order->customer_id = Customer::inRandomOrder()->first()->id;
+        $order->customer_id = $customer->id;
         $order->date = now();
         $order->sub_total = $this->subTotal;
         $order->total = $order->sub_total;
@@ -146,6 +171,17 @@ class CreateOrder extends Component
         $this->dispatch('toast-fire', type: 'success', message: 'Order created.');
 
         return redirect()->route('orders.index');
+    }
+
+
+    public function updatedPhone(string $value)
+    {
+        // dd($value);
+        $customer = Customer::firstWhere('mobile', $value);
+        if ($customer) {
+            $this->name = $customer->name;
+            $this->email = $customer->email;
+        }
     }
 
     public function render()

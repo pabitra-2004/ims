@@ -85,98 +85,108 @@
         </div>
     </div>
 
-    <div class="h-full flex flex-col rounded-2xl col-span-4 p-6 space-y-4 bg-white shadow-lg">
-        <div class="flex-1 relative">
-            <div class="absolute inset-0 overflow-hidden --overflow-y-auto">
-                <div class="pr-3">
-                    <div class="space-y-3">
-                        <flux:heading size="lg" variant="strong">Order Details</flux:heading>
+    <div class="h-full flex flex-col col-span-4  space-y-4 ">
 
-                        <div class="space-y-2.5">
-                            <div class="flex justify-between">
-                                <flux:heading class="text-gray-500">Order date</flux:heading>
-                                <flux:text>{{ now() }}</flux:text>
-                            </div>
+        <div class="rounded-2xl bg-white shadow-lg overflow-hidden p-6">
+            <div class="space-y-4">
+                <flux:input mask="9999999999" label="Phone Number" wire:model.enter.live='phone' badge="Required" />
+                <flux:input label="Name" wire:model='name' badge="Required" />
+                <flux:input label="Email" wire:model='email' badge="Optional" />
+                <flux:select label="Gender" wire:model='gender' badge="Required">
+                    <flux:select.option value="male">Male</flux:select.option>
+                    <flux:select.option value="female">Female</flux:select.option>
+                </flux:select>
+            </div>
+        </div>
 
-                            <div class="flex justify-between">
-                                <flux:heading class="text-gray-500">Email</flux:heading>
-                                <flux:text>nb cnb</flux:text>
-                            </div>
+        <div class="relative rounded-2xl bg-white shadow-lg overflow-hidden p-6">
+            <div class="space-y-3">
+                <flux:heading size="lg" variant="strong">Order Details</flux:heading>
 
-                            <div class="flex justify-between">
-                                <flux:heading class="text-gray-500">Phone</flux:heading>
-                                <flux:text>cbcnbcn</flux:text>
-                            </div>
-
-                            <div class="flex justify-between">
-                                <flux:heading class="text-gray-500">Payment</flux:heading>
-                                <flux:text>Credit Card</flux:text>
-                            </div>
-
-                            <div class="flex justify-between gap-4">
-                                <flux:heading class="text-gray-500">Shipping address</flux:heading>
-
-                                <flux:text class="text-wrap">West Bengal, India</flux:text>
-                            </div>
-                        </div>
+                <div class="space-y-2.5">
+                    <div class="flex justify-between">
+                        <flux:heading class="text-gray-500">Order date</flux:heading>
+                        <flux:text>{{ now()->toDateTimeString() }}</flux:text>
                     </div>
 
-                    <flux:separator class="my-3" />
+                    <div class="flex justify-between">
+                        <flux:heading class="text-gray-500">Email</flux:heading>
+                        <flux:text>nb cnb</flux:text>
+                    </div>
 
-                    <div class="space-y-3">
-                        <flux:heading size="lg" variant="strong">Order Amount</flux:heading>
+                    <div class="flex justify-between">
+                        <flux:heading class="text-gray-500">Phone</flux:heading>
+                        <flux:text>cbcnbcn</flux:text>
+                    </div>
 
-                        <div class="space-y-2.5">
-                            <div class="flex justify-between">
-                                <flux:heading class="text-gray-500">Original price</flux:heading>
-                                <flux:text>
-                                    &#8377;
-                                    6,592.00
-                                </flux:text>
-                            </div>
+                    <div class="flex justify-between">
+                        <flux:heading class="text-gray-500">Payment</flux:heading>
+                        <flux:text>Credit Card</flux:text>
+                    </div>
 
-                            <div class="flex justify-between">
-                                <flux:heading class="text-gray-500">Savings</flux:heading>
-                                <flux:text>
-                                    &#8377;
-                                    299.00
-                                </flux:text>
-                            </div>
+                    <div class="flex justify-between gap-4">
+                        <flux:heading class="text-gray-500">Shipping address</flux:heading>
 
-                            <div class="flex justify-between">
-                                <flux:heading class="text-gray-500">Store Pickup</flux:heading>
-                                <flux:text>
-                                    &#8377;
-                                    99
-                                </flux:text>
-                            </div>
-
-                            <div class="flex justify-between">
-                                <flux:heading class="text-gray-500">Tax</flux:heading>
-                                <flux:text>
-                                    &#8377;
-                                    799
-                                </flux:text>
-                            </div>
-                        </div>
-
-
-                        <flux:separator class="my-3" />
-
-                        <div class="flex justify-between">
-                            <flux:heading size="lg" variant="strong">Total</flux:heading>
-
-                            <flux:heading size="lg" variant="strong">
-                                &#8377;
-                                {{ $this->subTotal}}
-                            </flux:heading>
-                        </div>
-
+                        <flux:text class="text-wrap">West Bengal, India</flux:text>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="w-full">
+
+            <flux:separator class="my-3" />
+
+            <div class="space-y-3">
+                <flux:heading size="lg" variant="strong">Order Amount</flux:heading>
+
+                <div class="space-y-2.5">
+                    <div class="flex justify-between">
+                        <flux:heading class="text-gray-500">Original price</flux:heading>
+                        <flux:text>
+                            &#8377;
+                            6,592.00
+                        </flux:text>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <flux:heading class="text-gray-500">Savings</flux:heading>
+                        <flux:text>
+                            &#8377;
+                            299.00
+                        </flux:text>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <flux:heading class="text-gray-500">Store Pickup</flux:heading>
+                        <flux:text>
+                            &#8377;
+                            99
+                        </flux:text>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <flux:heading class="text-gray-500">Tax</flux:heading>
+                        <flux:text>
+                            &#8377;
+                            799
+                        </flux:text>
+                    </div>
+                </div>
+
+
+                <flux:separator class="my-3" />
+
+                <div class="flex justify-between">
+                    <flux:heading size="lg" variant="strong">Total</flux:heading>
+
+                    <flux:heading size="lg" variant="strong">
+                        &#8377;
+                        {{ $this->subTotal }}
+                    </flux:heading>
+                </div>
+
+            </div>
+
+            <flux:separator class="my-3" />
+
             <flux:button variant="primary" color="blue" class="w-full" wire:click="placeOrder">Place order
             </flux:button>
         </div>
