@@ -1,6 +1,6 @@
 <x-layouts::app>
 
-    <div class="flex flex-col gap-4 size-full">
+    <div class="flex flex-col size-full">
         <div class="grid grid-cols-2 gap-4 items-center">
             <div>
                 <flux:heading>Create New Order</flux:heading>
@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <flux:separator />
+        <flux:separator class="my-4"/>
 
         <livewire:orders.create-order />
         <livewire:products.product-quick-view />
