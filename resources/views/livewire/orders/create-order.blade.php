@@ -26,7 +26,7 @@
 
         <div class="flex-1 relative">
             <div class="absolute inset-0 overflow-hidden overflow-y-auto scrollbar-thin scroll-smooth">
-                <div class="grid grid-cols-4 gap-6">
+                <div class="grid grid-cols-6 gap-6">
                     @forelse ($this->products as $product)
                         <div class="space-y-2 border rounded overflow-hidden">
                             <button type="button" class="contents" wire:click="quickViewProduct({{ $product->id }})">
@@ -41,7 +41,7 @@
 
                             <div class="space-y-2 p-2">
                                 <div class="h-10">
-                                    <p class="text-sm font-medium line-clamp-2">{{ $product->name }}</p>
+                                    <p class="text-xs font-medium line-clamp-2">{{ $product->name }}</p>
                                 </div>
                                 <flux:badge size='sm'>{{ $product->category->name }}</flux:badge>
 
@@ -72,7 +72,7 @@
 
     <div class="h-full flex flex-col rounded-2xl col-span-4 p-6 space-y-4 bg-white shadow-lg">
         <div>
-            <flux:heading>Order summary</flux:heading>
+            <flux:heading>Selected Items</flux:heading>
         </div>
 
         <div class="flex-1 relative">

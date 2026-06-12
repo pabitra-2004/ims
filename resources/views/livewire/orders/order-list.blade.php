@@ -22,8 +22,8 @@
                         <flux:heading class="font-semibold text-sm text-zinc-600"># {{ $order->code }}
                         </flux:heading>
                     </flux:table.cell>
-                    <flux:table.cell class="flex items-center gap-2">
-                        <flux:heading>{{ $order->customer->name }}</flux:heading>
+                    <flux:table.cell variant="strong">
+                        {{ $order->customer->name }}
                     </flux:table.cell>
 
 
@@ -52,9 +52,9 @@
                                 {{-- <flux:button wire:click="previewInvoice({{ $order->id }})">
                                     Preview PDF
                                 </flux:button> --}}
-                                <flux:button size="sm" variant="primary" href="{{ route('orders.invoice', $order) }}" target="_blank">
+                                {{-- <flux:button size="sm" variant="primary" href="{{ route('orders.invoice', $order) }}" target="_blank">
                                     Invoice
-                                </flux:button>
+                                </flux:button> --}}
                                 <flux:menu.separator />
                                 <flux:menu.item variant="danger">Delete</flux:menu.item>
                             </flux:menu>

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('total');
             $table->integer('discount')->nullable();
             $table->integer('additional_charges')->default(0);
+            $table->json('custom_items')->nullable();
             $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
             $table->timestamps();
         });
