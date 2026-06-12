@@ -17,6 +17,7 @@ class Order extends Model
 
     protected $casts = [
         'date' => 'date',
+        'custom_items' => 'array',
     ];
 
     public function customer(): BelongsTo
