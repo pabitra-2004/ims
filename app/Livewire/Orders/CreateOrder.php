@@ -12,7 +12,6 @@ use Livewire\Component;
 class CreateOrder extends Component
 {
     public string $search = '';
-
     public array $filter = [
         'categories' => [],
     ];
@@ -30,11 +29,11 @@ class CreateOrder extends Component
 
     public function mount()
     {
-        Product::inRandomOrder()->take(4)->get()->each(fn($product) => $this->addToCart($product));
+        Product::inRandomOrder()->take(4)->get()->each(fn ($product) => $this->addToCart($product));
 
         $this->categories = Category::select(['id', 'name'])->orderBy('name', 'asc')->get()->toArray();
 
-        $this->view = 'livewire.orders.partials.confirm-order'; // for testing
+        // $this->view = 'livewire.orders.partials.confirm-order'; // for testing
     }
 
     public function quickViewProduct(string $id)
@@ -96,28 +95,6 @@ class CreateOrder extends Component
         // });
         // $order->total = $order->sub_total;
         // $order->save();
-
-        // // 1. normal save
-        // // foreach ($this->selected_products as $product) {
-        // //     $orderDetails = new OrderDetail();
-        // //     $orderDetails->order_id = $order->id;
-        // //     $orderDetails->product_id = $product['id'];
-        // //     $orderDetails->price = $product['price'];
-        // //     $orderDetails->quantity = $product['qty'];
-        // //     $orderDetails->save();
-        // // }
-
-        // // 2. save using relation
-        // $order_details = array_map(function ($product) {
-        //     return [
-        //         'product_id' => $product['id'],
-        //         'price' => $product['price'],
-        //         'quantity' => $product['qty'],
-        //     ];
-        // }, $this->selected_products);
-        // $order->orderDetails()->createMany($order_details);
-
-        // $this->dispatch('toast-fire', type: 'success', message: 'Order created.');
     }
 
     #[Computed()]
@@ -150,7 +127,6 @@ class CreateOrder extends Component
         //     'gender' => $this->gender,
         // ]);
 
-
         $order = new Order;
         $order->code = now()->timestamp;
         $order->customer_id = $customer->id;
@@ -173,10 +149,8 @@ class CreateOrder extends Component
         return redirect()->route('orders.index');
     }
 
-
     public function updatedPhone(string $value)
     {
-        // dd($value);
         $customer = Customer::firstWhere('mobile', $value);
         if ($customer) {
             $this->name = $customer->name;
