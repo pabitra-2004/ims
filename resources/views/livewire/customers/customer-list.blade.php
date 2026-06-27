@@ -1,7 +1,7 @@
 <div class="border-box">
     <div class="w-full grid grid-cols-2 gap-4 items-center mb-2">
         <div class="flex justify-start items-center gap-2">
-            <flux:select wire:model.change.live="quantity" class="w-fit hover:text-white" size="sm">
+            <flux:select wire:model.change.live="quantity" class="w-fit --hover:text-white" size="sm">
                 @foreach ([5, 10, 15, 20] as $item)
                     <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
                 @endforeach
@@ -16,23 +16,23 @@
 
     <flux:table :paginate="$customers" class="w-full table-fixed">
         <flux:table.columns>
-            <flux:table.column class="w-[2%]">#</flux:table.column>
-            <flux:table.column class="w-[45%]">Name</flux:table.column>
-            <flux:table.column class="w-[7%]">Gender</flux:table.column>
-            <flux:table.column class="w-[9%]">Phone</flux:table.column>
-            <flux:table.column class="w-[20%]">Email</flux:table.column>
-            <flux:table.column class="w-[10%]">Last Updated</flux:table.column>
+            <flux:table.column class="w-[5%]">#</flux:table.column>
+            <flux:table.column class="w-[27%]">Name</flux:table.column>
+            <flux:table.column class="w-[22%]">Email</flux:table.column>
+            <flux:table.column class="w-[14%]">Phone</flux:table.column>
+            <flux:table.column class="w-[9%]">Gender</flux:table.column>
+            <flux:table.column class="w-[15%]">Last Updated</flux:table.column>
             <flux:table.column class="w-[7%] pr-0 text">Actions</flux:table.column>
         </flux:table.columns>
 
         <flux:table.rows class="text-xs">
             @forelse ($customers as $customer)
                 <flux:table.row :key="$customer->id">
-                    <flux:table.cell class="w-[2%]">
+                    <flux:table.cell class="w-[5%]">
                         {{ $customers->firstItem() + $loop->index }}
                     </flux:table.cell>
 
-                    <flux:table.cell class="w-[45%]">
+                    <flux:table.cell class="w-[27%]">
                         <div class="capitalize truncate w-full flex items-center gap-4">
                             <flux:avatar size="xl"
                                 src="{{ $customer->photo ? asset('storage/' . $customer->photo) : asset('default_images.png') }}"
@@ -41,19 +41,19 @@
                         </div>
                     </flux:table.cell>
 
-                    <flux:table.cell class="w-[7%] capitalize">
-                        {{ $customer->gender }}
-                    </flux:table.cell>
-
-                    <flux:table.cell class="w-[9%]">
-                        {{ $customer->mobile }}
-                    </flux:table.cell>
-
-                    <flux:table.cell class="w-[20%] truncate">
+                    <flux:table.cell class="w-[22%] truncate">
                         {{ $customer->email }}
                     </flux:table.cell>
 
-                    <flux:table.cell class="w-[10%]">
+                    <flux:table.cell class="w-[14%]">
+                        {{ $customer->mobile }}
+                    </flux:table.cell>
+
+                    <flux:table.cell class="w-[9%] capitalize">
+                        {{ $customer->gender }}
+                    </flux:table.cell>
+
+                    <flux:table.cell class="w-[15%]">
                         <flux:text class="text-xs truncate w-full">
                             &#128337;
                             {{ $customer->updated_at->diffForHumans(['options' => \Carbon\Carbon::JUST_NOW]) }}
