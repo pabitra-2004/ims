@@ -52,8 +52,8 @@
                             </div>
                         </div>
                     @endforeach
-                    {{-- </div> --}}
-                    {{-- <div class="space-y-4 divide-y divide-neutral-300 divide-dashed"> --}}
+
+                    <!-- custom item lists -->
                     @foreach ($custom_items as $index => $item)
                         <div class="flex gap-4 pb-4 last:pb-0">
                             <img src="{{ asset('default_images.png') }}"
@@ -84,7 +84,6 @@
                         </div>
                     @endforeach
                 </div>
-
             </flux:card>
 
             <flux:card>
@@ -93,58 +92,39 @@
 
                     <div class="space-y-2.5">
                         <div class="flex justify-between">
-                            <flux:heading class="text-gray-500">Original price</flux:heading>
-                            <flux:text>
-                                &#8377;
-                                6,592.00
-                            </flux:text>
+                            <flux:heading class="text-gray-500">MRP</flux:heading>
+                            <flux:text> &#8377; {{ $this->subTotal }}</flux:text>
                         </div>
 
                         <div class="flex justify-between">
-                            <flux:heading class="text-gray-500">Savings</flux:heading>
-                            <flux:text>
-                                &#8377;
-                                299.00
-                            </flux:text>
+                            <flux:heading class="text-gray-500">Platform Fee</flux:heading>
+                            <flux:text> &#8377; {{ $platform_fee }}</flux:text>
                         </div>
 
                         <div class="flex justify-between">
-                            <flux:heading class="text-gray-500">Store Pickup</flux:heading>
-                            <flux:text>
-                                &#8377;
-                                99
-                            </flux:text>
-                        </div>
-
-                        <div class="flex justify-between">
-                            <flux:heading class="text-gray-500">Tax</flux:heading>
-                            <flux:text>
-                                &#8377;
-                                799
-                            </flux:text>
+                            <flux:heading class="text-gray-500">Discount</flux:heading>
+                            <flux:text> &#8377;{{ $discount }}</flux:text>
                         </div>
                     </div>
-
 
                     <flux:separator class="my-3" />
 
                     <div class="flex justify-between">
                         <flux:heading size="lg" variant="strong">Total</flux:heading>
-
-                        <flux:heading size="lg" variant="strong">
-                            &#8377;
-                            {{ $this->subTotal }}
-                        </flux:heading>
+                        <flux:heading size="lg" variant="strong">&#8377; {{ $this->grandTotal }}</flux:heading>
                     </div>
-
                 </div>
             </flux:card>
+
+            <flux:button class="w-full --mt-6" variant="primary" wire:click="placeOrder">Place Order</flux:button>
+
         </div>
 
         {{-- column 2 --}}
         <div class="col-span-2 space-y-6">
             <flux:card class="space-y-4">
-                <flux:input mask="9999999999" label="Phone Number" wire:model.enter.live='phone' badge="Required" />
+                <flux:input mask="9999999999" label="Phone Number" wire:model.enter.live='phone' badge="Required"
+                    required />
                 <flux:input label="Name" wire:model='name' badge="Required" />
                 <flux:input label="Email" wire:model='email' badge="Optional" />
                 <flux:select label="Gender" wire:model='gender' badge="Required">
@@ -169,20 +149,19 @@
                 <flux:select wire:model="selected_district" label="District" badge="Required"
                     placeholder="Choose District...">
                     @foreach ($districts as $district_id => $district_name)
-                        <flux:select.option value="{{ $district_id ?? 0 }}">{{ $district_name }}
+                        <flux:select.option value="{{ $district_id }}">{{ $district_name }}
                         </flux:select.option>
                     @endforeach
                 </flux:select>
 
-                <flux:input wire:model="city" label="City" placeholder="City" badge="Required" />
-                <flux:input type='number' wire:model="pincode" label="Pincode" placeholder="Pincode"
+                <flux:input wire:model="customer_city" label="City" placeholder="City" badge="Required" />
+                <flux:input type='number' wire:model="customer_pincode" label="Pincode" placeholder="Pincode"
                     badge="Required" />
-                <flux:textarea wire:model="address" label="Address" placeholder="Enter address here..." />
+                <flux:textarea wire:model="customer_address" label="Address" placeholder="Enter address here..." />
             </flux:card>
         </div>
     </div>
 
-    <flux:button class="w-full" variant="primary" wire:click="placeOrder">Place Order</flux:button>
 
     <flux:modal name="add-custom-item" class="md:w-96 mt-30!">
         <form class="space-y-6" wire:submit="addCustomItem">
