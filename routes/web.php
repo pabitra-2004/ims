@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Pdfs\OrderInvoiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::view('customers', 'customers.index')->name('customers.index');
     Route::view('orders', 'orders.index')->name('orders.index');
     Route::view('orders/create', 'orders.create')->name('orders.create');
+
+    Route::get('/orders/{order}/invoice', OrderInvoiceController::class)->name('orders.invoice');
 });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';
