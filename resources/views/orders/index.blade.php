@@ -8,8 +8,7 @@
 
             {{-- actions --}}
             <div class="justify-self-end">
-                <flux:button :href="route('orders.create')" icon="plus" variant="primary" color="green"
-                    wire:navigate>
+                <flux:button :href="route('orders.create')" icon="plus" variant="primary" color="green" wire:navigate>
                     Create Orders
                 </flux:button>
             </div>
@@ -18,5 +17,4 @@
     </div>
 
     <livewire:orders.order-list />
-
 </x-layouts::app>
