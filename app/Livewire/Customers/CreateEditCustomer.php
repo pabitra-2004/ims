@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\District;
 use App\Models\State;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
@@ -15,30 +16,39 @@ use Livewire\WithFileUploads;
 class CreateEditCustomer extends Component
 {
     use WithFileUploads;
+
     /*--------------------------------------------------------------------------
     | properties
     |--------------------------------------------------------------------------*/
     #[Validate('image|max:10240')] // 10MB Max
-    public  $photo;
+    public $photo;
+
     public ?string $existing_photo = null;
 
     #[Locked]
     public ?string $customer_id = null;
 
     public array $states = [];
+
     public array $districts = [];
 
     public string $name;
+
     public string $gender = 'male';
+
     public string $mobile;
+
     public ?string $email = '';
 
     public string $selected_state = '';
-    public string $selected_district = '';
-    public string $city;
-    public string $address;
-    public string $pincode;
 
+    public string $selected_district = '';
+
+    public string $city;
+
+    public string $address;
+
+    public string $pincode;
 
     /*--------------------------------------------------------------------------
     |listeners
@@ -47,7 +57,7 @@ class CreateEditCustomer extends Component
     public function loadCustomer(Customer $customer)
     {
         $this->customer_id = $customer->id;
-        $this->existing_photo = $customer->photo; 
+        $this->existing_photo = $customer->photo;
         $this->name = $customer->name;
         $this->gender = $customer->gender;
         $this->mobile = $customer->mobile;
@@ -92,27 +102,37 @@ class CreateEditCustomer extends Component
     |--------------------------------------------------------------------------*/
     public function saveCustomer()
     {
-
         $this->validate([
-            'photo' => [$this->existing_photo ? 'nullable' : 'required', 'image', 'max:10240'], // 10MB Max
-            'name' => 'required|string|max:255',
-            'gender' => 'required',
-            'mobile' => 'required|digits:10',
-            'email' => 'nullable|email',
+            'photo' => ['nullable', 'image', 'max:10240'], // 10MB Max
+            'name' => ['required', 'string', 'min:3', 'max:100'],
+            'gender' => ['required', Rule::in(['male', 'female', 'other'])],
+            'mobile' => ['required', 'string', 'digits:10',  'regex:/^[6-9]\d{9}$/',  Rule::unique('customers', 'mobile')->ignore($this->customer_id)],
+            'email' => ['nullable', 'email', 'max:255', Rule::unique('customers', 'email')->ignore($this->customer_id)],
+            'selected_state' => ['required', 'exists:states,id'],
+            'selected_district' => ['required', 'exists:districts,id'],
+            'city' => ['required', 'string', 'max:100'],
+            'address' => ['required', 'string', 'max:500'],
+            'pincode' => ['required', 'digits:6'],
         ]);
 
-        $customer = Customer::findOrNew($this->customer_id);
-        if($this->photo){
-            if($this->existing_photo){
+        $photoPath = $this->existing_photo;
+        if ($this->photo) {
+            if ($this->existing_photo) {
                 Storage::disk('public')->delete($this->existing_photo);
             }
-            $customer->photo = $this->photo->store('images/customers', 'public');
+            $photoPath = $this->photo->store('images/customers', 'public');
         }
-        $customer->name = $this->name;
-        $customer->gender = $this->gender;
-        $customer->mobile = $this->mobile;
-        $customer->email = $this->email;
-        $customer->save();
+
+        $customer = Customer::updateOrCreate(
+            ['id' => $this->customer_id],
+            [
+                'photo' => $photoPath ?? null,
+                'name' => $this->name,
+                'gender' => $this->gender,
+                'mobile' => $this->mobile,
+                'email' => $this->email ?? null,
+            ]
+        );
 
         $address = $customer->addresses()->firstOrNew();
         $address->state_id = $this->selected_state;

@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Customer;
 use App\Models\District;
-use App\Models\State;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,12 +18,13 @@ class AddressFactory extends Factory
      */
     public function definition(): array
     {
+        $stateId = 36;
+        $districtId = District::whereStateId($stateId)->inRandomOrder()->value('id');
+
         return [
-            'customer_id' => Customer::inRandomOrder()->first()->id ?? Customer::factory(),
-            'state_id' => 36,
-            'district_id' => function (array $attributes) {
-                return District::whereStateId($attributes['state_id'])->inRandomOrder()->first()->id;
-            },
+            'customer_id' => Customer::inRandomOrder()->value('id') ?? Customer::factory(),
+            'state_id' => $stateId,
+            'district_id' => $districtId,
             'city' => $this->faker->city(),
             'address' => $this->faker->address(),
             'pin_code' => $this->faker->postcode(),
