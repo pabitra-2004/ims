@@ -21,7 +21,7 @@ class DelhiDistrictSeeder extends Seeder
             [81, 'North East', 'NORTH EAST', 'NED'],
             [82, 'North West', 'NORTH WEST', 'NWD'],
             [795, 'Old Delhi', 'Old Delhi', ''],
-            [794, 'Outer North', 'Outer North', ''], ,
+            [794, 'Outer North', 'Outer North', ''],
             [83, 'South', 'SOUTH', 'SDL'],
             [670, 'South East', 'SOUTH EAST', 'STS'],
             [84, 'South West', 'SOUTH WEST', 'SWD'],

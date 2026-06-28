@@ -17,7 +17,7 @@ class ChhattisgarhDistrictSeeder extends Seeder
             [644, 'Balodabazar-Bhatapara', 'बलौदाबाजार-भाटापारा', 'BLB'],
             [649, 'Balrampur-Ramanujganj', 'बलरामपुर-रामानुजगंज', 'BLM'],
             [374, 'Bastar', 'बस्तर', 'BAS'],
-            [650, 'Bemetara', 'बेमेतरा', , 'BEM'],
+            [650, 'Bemetara', 'बेमेतरा', 'BEM'],
             [636, 'Bijapur', 'बीजापुर', 'BIJ'],
             [375, 'Bilaspur', 'बिलासपुर', 'BLP'],
             [376, 'Dakshin Bastar Dantewada', 'दक्षिण बस्तर दंतेवाड़ा', 'DNT'],
