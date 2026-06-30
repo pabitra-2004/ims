@@ -1,10 +1,10 @@
-<div class="w-full box-border select-none">
+<div class="box-border w-full select-none">
 
-    <div class="w-full grid grid-cols-2 items-center gap-4 mb-4">
+    <div class="grid items-center w-full grid-cols-2 gap-4 mb-2">
 
         <!-- Per Page -->
         <div class="w-fit">
-            <flux:select wire:model.change.live="quantity">
+            <flux:select wire:model.change.live="quantity" size="sm">
                 @foreach ([5, 10, 15, 20] as $item)
                     <flux:select.option :value="$item">{{ $item }}</flux:select.option>
                 @endforeach
@@ -12,11 +12,10 @@
         </div>
 
         <!-- Filters + Search -->
-        <div class="flex flex-wrap items-center justify-end gap-4">
-
+        <div class="flex flex-wrap items-center justify-end gap-2">
             <!-- Filter Dropdown -->
             <flux:dropdown>
-                <flux:button icon="funnel" icon:trailing="chevron-down">Filter by</flux:button>
+                <flux:button icon="funnel" size="sm" icon:trailing="chevron-down">Filter by</flux:button>
 
                 <flux:menu>
                     <!-- Status Filter -->
@@ -38,12 +37,12 @@
 
                         <div class="w-64">
                             <!-- Search Category -->
-                            <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="searchCategories"
-                                placeholder="Search Categories..." clearable class="max-w-xs"
-                                title="Search categories" />
+                            <flux:input icon="magnifying-glass" size="sm"
+                                wire:model.live.debounce.350ms="searchCategories" placeholder="Search Categories..."
+                                clearable title="Search categories" />
 
                             <!-- Category List -->
-                            <div class="max-h-60 overflow-y-auto scrollbar-modern scrollbar-thin-1 my-1 pr-1">
+                            <div class="pr-1 my-1 overflow-y-auto max-h-60 scrollbar-modern scrollbar-thin-1">
                                 <flux:menu.checkbox.group wire:model.live="filters.categories">
                                     @foreach ($categories as $category)
                                         <flux:menu.checkbox keep-open class="text-wrap" :value="$category['id']">
@@ -72,15 +71,15 @@
             </flux:dropdown>
 
             <!-- Search -->
-            <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search" placeholder="Search Products..."
-                clearable class="max-w-xs" title="Search by name, code, slug" />
+            <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search" size="sm"
+                placeholder="Search Products..." clearable class="max-w-xs" title="Search by name, code, slug" />
 
         </div>
     </div>
 
 
     <!-- Products Table -->
-    <flux:table :paginate="$products" class="table-fixed w-full">
+    <flux:table :paginate="$products" class="w-full table-fixed">
 
         <!-- Table Columns -->
         <flux:table.columns>
@@ -163,7 +162,7 @@
 
                     <!-- Status -->
                     <flux:table.cell class="py-2!">
-                        <label class="inline-flex items-center me-5 cursor-pointer" onclick="event.preventDefault()"
+                        <label class="inline-flex items-center cursor-pointer me-5" onclick="event.preventDefault()"
                             wire:swal-confirm="{
                                 title: 'Change Status?',
                                 text: 'This action will update the status.',
@@ -178,10 +177,10 @@
                             }">
                             <input type="checkbox" value="" class="sr-only peer" @checked($product->is_active)>
                             <div
-                                class="relative w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 dark:peer-checked:bg-blue-500">
+                                class="relative w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500 dark:peer-checked:bg-blue-500">
                             </div>
                             <flux:badge color="{{ $product->is_active ? 'green' : 'zinc' }}" size="sm"
-                                class="w-16 justify-center select-none ms-2">
+                                class="justify-center w-16 select-none ms-2">
                                 {{ $product->is_active ? 'Active' : 'Inactive' }}
                             </flux:badge>
                         </label>
@@ -222,11 +221,16 @@
                 </flux:table.row>
 
             @empty
-
                 <!-- Empty State -->
                 <flux:table.row>
-                    <flux:table.cell colspan="8" class="text-center py-12 text-red-500">
-                        No data found
+                    <flux:table.cell colspan="12">
+                        <div class="flex flex-col items-center justify-center flex-1 gap-4 h-115">
+                            <img src="{{ asset('no_data_found.png') }}" alt="" class="size-16">
+                            <div class="text-center">
+                                <flux:heading size="xl" variant="subtle">Oops!</flux:heading>
+                                <flux:text size="lg">No data found</flux:text>
+                            </div>
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
             @endforelse
