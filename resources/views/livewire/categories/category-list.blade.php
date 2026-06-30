@@ -1,6 +1,6 @@
 <div>
-    <div class="grid grid-cols-2 gap-4 items-center mb-2">
-        <div class="flex justify-start items-center gap-2">
+    <div class="grid items-center grid-cols-2 gap-4 mb-2">
+        <div class="flex items-center justify-start gap-2">
             <flux:select wire:model.change.live="quantity" class="w-fit" size="sm">
                 @foreach ([5, 10, 15, 20] as $item)
                     <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
@@ -54,7 +54,7 @@
                 Inactive All
             </flux:button>
         </div>
-        <div class="flex justify-end-safe items-center gap-2">
+        <div class="flex items-center gap-2 justify-end-safe">
             <flux:dropdown>
                 <flux:button icon:trailing="chevron-down" size="sm">Filters</flux:button>
 
@@ -88,7 +88,7 @@
 
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
                             stroke="currentColor" fill="none" stroke-width="4"
-                            class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
+                            class="absolute invisible transition duration-200 -translate-x-1/2 pointer-events-none left-1/2 top-1/2 size-3 -translate-y-1/4 peer-checked:-translate-y-1/2 text-on-primary peer-checked:visible dark:text-on-primary-dark">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
                     </span>
@@ -115,7 +115,7 @@
 
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
                                     stroke="currentColor" fill="none" stroke-width="4"
-                                    class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
+                                    class="absolute invisible transition duration-200 -translate-x-1/2 pointer-events-none left-1/2 top-1/2 size-3 -translate-y-1/4 peer-checked:-translate-y-1/2 text-on-primary peer-checked:visible dark:text-on-primary-dark">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                 </svg>
                             </span>
@@ -133,7 +133,7 @@
                     <flux:table.cell>{{ $category->slug }}</flux:table.cell>
 
                     <flux:table.cell>
-                        <label class="flex items-center select-none cursor-pointer" onclick="event.preventDefault()"
+                        <label class="flex items-center cursor-pointer select-none" onclick="event.preventDefault()"
                             wire:swal-confirm="{
                                 title: 'Change Status?',
                                 text: 'This action will update the status.',
@@ -186,8 +186,14 @@
             @empty
                 <!-- Empty State -->
                 <flux:table.row>
-                    <flux:table.cell colspan="8" class="text-center py-12 text-red-500">
-                        No data found
+                    <flux:table.cell colspan="12">
+                        <div class="flex flex-col items-center justify-center flex-1 gap-4 h-115">
+                            <img src="{{ asset('no_data_found.png') }}" alt="" class="size-16">
+                            <div class="text-center">
+                                <flux:heading size="xl" variant="subtle">Oops!</flux:heading>
+                                <flux:text size="lg">No data found</flux:text>
+                            </div>
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
             @endforelse
