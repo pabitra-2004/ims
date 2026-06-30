@@ -1,14 +1,14 @@
 <div class="border-box">
-    <div class="w-full grid grid-cols-2 gap-4 items-center mb-2">
-        <div class="flex justify-start items-center gap-2">
+    <div class="grid items-center w-full grid-cols-2 gap-4 mb-2">
+        <div class="flex items-center justify-start gap-2">
             <flux:select wire:model.change.live="quantity" class="w-fit --hover:text-white" size="sm">
-                @foreach ([5, 10, 15, 20] as $item)
+                @foreach ([5, 10, 15, 20, 50] as $item)
                     <flux:select.option value="{{ $item }}">{{ $item }}</flux:select.option>
                 @endforeach
             </flux:select>
         </div>
 
-        <div class="flex justify-end-safe items-center">
+        <div class="flex items-center justify-end-safe">
             <flux:input icon="magnifying-glass" size="sm" wire:model.live.debounce.300ms='search'
                 placeholder="Search Customer..." clearable class="max-w-xs" />
         </div>
@@ -33,7 +33,7 @@
                     </flux:table.cell>
 
                     <flux:table.cell class="w-[27%]">
-                        <div class="capitalize truncate w-full flex items-center gap-4">
+                        <div class="flex items-center w-full gap-4 capitalize truncate">
                             <flux:avatar size="xl"
                                 src="{{ $customer->photo ? asset('storage/' . $customer->photo) : asset('default_images.png') }}"
                                 alt="{{ $customer->name }}" />
@@ -54,7 +54,7 @@
                     </flux:table.cell>
 
                     <flux:table.cell class="w-[15%]">
-                        <flux:text class="text-xs truncate w-full">
+                        <flux:text class="w-full text-xs truncate">
                             &#128337;
                             {{ $customer->updated_at->diffForHumans(['options' => \Carbon\Carbon::JUST_NOW]) }}
                         </flux:text>
@@ -81,10 +81,16 @@
 
                 </flux:table.row>
             @empty
-                <!-- Empty State -->
+               <!-- Empty State -->
                 <flux:table.row>
-                    <flux:table.cell colspan="8" class="text-center py-12 text-red-500">
-                        No data found
+                    <flux:table.cell colspan="12">
+                        <div class="flex flex-col items-center justify-center flex-1 gap-4 h-115">
+                            <img src="{{ asset('no_data_found.png') }}" alt="" class="size-16">
+                            <div class="text-center">
+                                <flux:heading size="xl" variant="subtle">Oops!</flux:heading>
+                                <flux:text size="lg">No data found</flux:text>
+                            </div>
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
             @endforelse
