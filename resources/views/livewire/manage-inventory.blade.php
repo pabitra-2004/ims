@@ -1,31 +1,30 @@
+@use('Illuminate\Support\Facades\Storage')
+
 <div>
-    {{-- @dd($products); --}}
-
-    <div class="w-full grid grid-cols-2 items-center gap-4 mb-4 ">
-
+    <div class="grid items-center w-full grid-cols-2 gap-4 mb-2">
         <!-- Per Page -->
-        <div class="w-fit flex items-center gap-3">
-            <flux:select wire:model.change.live="perPage">
-                @foreach ([5, 10, 15, 20] as $item)
+        <div class="flex items-center gap-3 w-fit">
+            <flux:select size="sm" wire:model.change.live="perPage">
+                @foreach ([5, 10, 15, 20, 50] as $item)
                     <flux:select.option :value="$item">{{ $item }}</flux:select.option>
                 @endforeach
             </flux:select>
-            <flux:button color="rose" icon="trash" :disabled="count($selected) === 0" wire:click="deleteSelected">
+            <flux:button color="rose" icon="trash" size="sm" :disabled="count($selected) === 0" wire:click="deleteSelected">
                 Delete Selected ({{ count($selected) }})
             </flux:button>
         </div>
 
         <!-- Filters + search -->
-        <div class="flex flex-wrap items-center justify-end gap-4">
+        <div class="flex flex-wrap items-center justify-end gap-2">
 
             <!-- Search -->
-            <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search"
-                placeholder="Search anything here..." clearable class="max-w-xs" title="Search by name, code" />
+            <flux:input icon="magnifying-glass" wire:model.live.debounce.350ms="search" size="sm"
+                placeholder="Search by name and code" clearable class="max-w-xs" title="Search by name, code" />
 
 
             <!-- Filter Dropdown -->
             <flux:dropdown>
-                <flux:button icon="funnel" icon:trailing="chevron-down">Filter</flux:button>
+                <flux:button icon="funnel" size="sm" icon:trailing="chevron-down">Filter</flux:button>
 
                 <flux:menu>
                     <!-- Status Filter -->
@@ -55,7 +54,6 @@
         </div>
     </div>
 
-
     <flux:table :paginate="$products">
         <flux:table.columns sticky class="bg-transparent">
             <flux:table.column class="pl-2">
@@ -68,7 +66,7 @@
 
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
                             stroke="currentColor" fill="none" stroke-width="4"
-                            class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
+                            class="absolute invisible transition duration-200 -translate-x-1/2 pointer-events-none left-1/2 top-1/2 size-3 -translate-y-1/4 peer-checked:-translate-y-1/2 text-on-primary peer-checked:visible dark:text-on-primary-dark">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
                     </span>
@@ -79,6 +77,7 @@
             <flux:table.column>Status</flux:table.column>
             <flux:table.column align="center">Stock</flux:table.column>
         </flux:table.columns>
+        
         <flux:table.rows>
             @forelse ($products as $product)
                 <flux:table.row :key="$product->id">
@@ -92,7 +91,7 @@
 
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"
                                     stroke="currentColor" fill="none" stroke-width="4"
-                                    class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/4 peer-checked:-translate-y-1/2 transition duration-200 text-on-primary peer-checked:visible dark:text-on-primary-dark">
+                                    class="absolute invisible transition duration-200 -translate-x-1/2 pointer-events-none left-1/2 top-1/2 size-3 -translate-y-1/4 peer-checked:-translate-y-1/2 text-on-primary peer-checked:visible dark:text-on-primary-dark">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                 </svg>
                             </span>
@@ -101,11 +100,11 @@
 
                     <flux:table.cell class="flex items-center gap-3 ">
                         <flux:avatar size="xl"
-                            src="{{ $product->photo ? asset('storage/' . $product->photo) : asset('default_images.png') }}"
+                            src="{{ $product->images ? Storage::url($product->images[0]) : asset('default_images.png') }}"
                             alt="{{ $product->name }} image" />
                         <div class="flex flex-col">
                             <flux:heading>{{ $product->name }}</flux:heading>
-                            <flux:text class="max-sm:hidden truncate max-w-xs">[ {{ $product->code }} ]</flux:text>
+                            <flux:text class="max-w-xs truncate max-sm:hidden">[ {{ $product->code }} ]</flux:text>
                         </div>
                     </flux:table.cell>
 
@@ -129,27 +128,31 @@
                     </flux:table.cell>
 
                     <flux:table.cell align="center">
-
                         <div class="flex justify-center">
                             <flux:button icon="minus" size="xs" wire:click="decrement({{ $product->id }})"
                                 :disabled='!$product->inventory?->quantity' />
 
                             <span
-                                class="w-16 text-center select-none tracking-wider tabular-nums font-medium text-lg text-current">
+                                class="w-16 text-lg font-medium tracking-wider text-center text-current select-none tabular-nums">
                                 {{ $product->inventory?->quantity ?? 0 }}
                             </span>
 
                             <flux:button icon="plus" size="xs" wire:click="increment({{ $product->id }})" />
                         </div>
-
                     </flux:table.cell>
 
                 </flux:table.row>
             @empty
                 <!-- Empty State -->
                 <flux:table.row>
-                    <flux:table.cell colspan="8" class="text-center py-12 text-red-500">
-                        No data found
+                    <flux:table.cell colspan="12">
+                        <div class="flex flex-col items-center justify-center flex-1 gap-4 h-105">
+                            <img src="{{ asset('no_data_found.png') }}" alt="" class="size-16">
+                            <div class="text-center">
+                                <flux:heading size="xl" variant="subtle">Oops!</flux:heading>
+                                <flux:text size="lg">No data found</flux:text>
+                            </div>
+                        </div>
                     </flux:table.cell>
                 </flux:table.row>
             @endforelse

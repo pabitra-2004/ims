@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -15,7 +16,9 @@ class ManageInventory extends Component
     public $perPage = 10;
 
     public $selected = [];
+
     public $selectAll = false;
+
     public $pageProductIds = [];
 
     public ?string $search = '';
@@ -27,7 +30,22 @@ class ManageInventory extends Component
     #[On('refresh-inventory')]
     public function refresh() {}
 
-    public function updatedSelectAll($checked)
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilters()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSelectAll(bool $checked)
     {
         $this->selected = $checked ? $this->pageProductIds : [];
     }
@@ -37,9 +55,8 @@ class ManageInventory extends Component
         $this->selectAll = ! empty($this->pageProductIds) && count(array_intersect($this->selected, $this->pageProductIds)) === count($this->pageProductIds);
     }
 
-    public function updatingPage($page)
+    public function updatingPage()
     {
-        // dd($page);
         $this->selectAll = false;
         $this->selected = [];
     }
@@ -48,21 +65,30 @@ class ManageInventory extends Component
     {
         $ids = array_intersect($this->selected, $this->pageProductIds);
 
-        Product::whereIn('id', $ids)->delete();
+        if (empty($ids)) {
+            return;
+        }
+
+        $products = Product::whereIn('id', $ids)->get();
+
+        foreach ($products as $product) {
+            foreach ($product->images ?? [] as $image) {
+                Storage::disk('public')->delete($image);
+            }
+
+            $product->delete();
+        }
 
         $this->selected = array_diff($this->selected, $ids);
         $this->selectAll = false;
 
-        $this->dispatch('toast-fire', type: 'success', message: 'Page products deleted!');
+        $this->dispatch('toast-fire', type: 'success', message: 'Selected  products deleted!');
     }
 
     public function increment(Product $product)
     {
         if ($product->inventory) {
-            // $product->inventory->quantity = $product->inventory->quantity + 1;
-            // $product->inventory->save();
-
-            $product->inventory->increment('quantity');
+            $product->inventory->increment('quantity', 1);
         } else {
             $product->inventory()->create(['quantity' => 1]);
         }
@@ -71,9 +97,8 @@ class ManageInventory extends Component
     public function decrement(Product $product)
     {
         if ($product->inventory) {
-
             if ($product->inventory?->quantity > 0) {
-                $product->inventory->decrement('quantity');
+                $product->inventory()->decrement('quantity');
             }
         }
     }
@@ -84,6 +109,7 @@ class ManageInventory extends Component
             $this->filters[$key] = [];
         } else {
             $this->reset('filters');
+            $this->resetPage();
         }
     }
 
@@ -101,6 +127,7 @@ class ManageInventory extends Component
                 $out_of_stock = in_array('out_of_stock', $this->filters['status']);
 
                 if ($in_stock & $low_stock & $out_of_stock) {
+                    return ;
                 } elseif ($in_stock & $low_stock) {
                     $query->whereRelation('inventory', 'quantity', '>', 0);
                 } elseif ($in_stock & $out_of_stock) {

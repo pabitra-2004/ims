@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +21,16 @@ class Inventory extends Model
      * @var array
      */
     protected $touches = ['product'];
+
+
+    #[Scope]
+    protected function search(Builder $query, string $search)
+    {
+        if ($search) {
+            $query->whereLike('code', "%{$search}%")
+                ->orWhereLike('name', "%{$search}%");
+        }
+    }
 
     public function product(): BelongsTo
     {
