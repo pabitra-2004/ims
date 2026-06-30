@@ -1,5 +1,5 @@
 <div>
-    <div class="grid grid-cols-8 gap-6 h-full">
+    <div class="grid h-full grid-cols-8 gap-6">
         <div class="col-span-6 space-y-6">
             <flux:card class="space-y-6">
                 <div class="flex items-center justify-between">
@@ -21,29 +21,29 @@
                         <div class="flex gap-4 pb-4 last:pb-0">
                             @isset($product['image'])
                                 <img src="{{ asset('storage/' . $product['image']) }}"
-                                    class="aspect-square w-20 rounded-xs shadow-sm">
+                                    class="w-20 shadow-sm aspect-square rounded-xs">
                             @else
                                 <img src="{{ asset('default_images.png') }}"
-                                    class="aspect-square w-22 rounded-xs shadow-sm">
+                                    class="shadow-sm aspect-square w-22 rounded-xs">
                             @endisset
 
-                            <div class="flex-1 inline-flex flex-col space-y-1">
-                                <div class="flex-1 inline-flex justify-between gap-4">
+                            <div class="inline-flex flex-col flex-1 space-y-1">
+                                <div class="inline-flex justify-between flex-1 gap-4">
                                     <p class="text-sm font-medium line-clamp-2">{{ $product['name'] }}</p>
-                                    <span class="tabular-nums text-base font-medium flex-none text-nowrap">&#8377;
+                                    <span class="flex-none text-base font-medium tabular-nums text-nowrap">&#8377;
                                         {{ number_format($product['price']) }}</span>
                                 </div>
                                 <div class="flex-none">
                                     <flux:badge size='sm'>{{ $product['category'] }}</flux:badge>
                                 </div>
-                                <div class="flex justify-between items-center gap-2">
-                                    <label class="text-sm font-medium text-gray-500 mr-2 inline-flex items-center">
+                                <div class="flex items-center justify-between gap-2">
+                                    <label class="inline-flex items-center mr-2 text-sm font-medium text-gray-500">
                                         Qty:
                                         <input type="number" min='1'
                                             x-on:input="$el.value = $el.value.replace(/^0+/, '1')"
                                             x-on:keydown="if(['-', '+', 'e', 'E', '.'].includes($event.key)) $event.preventDefault()"
                                             wire:model.live="selected_products.{{ $index }}.qty"
-                                            class="max-w-15 w-full px-2 border-none focus:outline-none" />
+                                            class="w-full px-2 border-none max-w-15 focus:outline-none" />
                                     </label>
 
                                     <flux:button type="button" wire:click="removeProduct({{ $index }})"
@@ -57,22 +57,22 @@
                     @foreach ($custom_items as $index => $item)
                         <div class="flex gap-4 pb-4 last:pb-0">
                             <img src="{{ asset('default_images.png') }}"
-                                class="aspect-square w-22 rounded-xs shadow-sm">
+                                class="shadow-sm aspect-square w-22 rounded-xs">
 
-                            <div class="flex-1 inline-flex flex-col space-y-1">
-                                <div class="flex-1 inline-flex justify-between gap-4">
+                            <div class="inline-flex flex-col flex-1 space-y-1">
+                                <div class="inline-flex justify-between flex-1 gap-4">
                                     <p class="text-sm font-medium line-clamp-2">{{ $item['name'] }}</p>
-                                    <span class="tabular-nums text-base font-medium flex-none text-nowrap">&#8377;
+                                    <span class="flex-none text-base font-medium tabular-nums text-nowrap">&#8377;
                                         {{ number_format($item['price']) }}</span>
                                 </div>
-                                <div class="flex justify-between items-center gap-2">
-                                    <label class="text-sm font-medium text-gray-500 mr-2 inline-flex items-center">
+                                <div class="flex items-center justify-between gap-2">
+                                    <label class="inline-flex items-center mr-2 text-sm font-medium text-gray-500">
                                         Qty:
                                         <input type="number" min='1'
                                             x-on:input="$el.value = $el.value.replace(/^0+/, '1')"
                                             x-on:keydown="if(['-', '+', 'e', 'E', '.'].includes($event.key)) $event.preventDefault()"
                                             wire:model.live="custom_items.{{ $index }}.qty"
-                                            class="max-w-15 w-full px-2 border-none focus:outline-none" />
+                                            class="w-full px-2 border-none max-w-15 focus:outline-none" />
                                     </label>
 
                                     <flux:button type="button" wire:click="removeItem({{ $index }})"
@@ -139,14 +139,14 @@
                     <flux:text class="mt-2">Enter the customer's address details.</flux:text>
                 </div>
 
-                <flux:select wire:model.live="selected_state" label="State" badge="Required"
+                <flux:select wire:model.live="selected_state" label="State" badge="Optional"
                     placeholder="Choose State...">
                     @foreach ($states as $state_id => $state_name)
                         <flux:select.option value="{{ $state_id }}">{{ $state_name }}</flux:select.option>
                     @endforeach
                 </flux:select>
 
-                <flux:select wire:model="selected_district" label="District" badge="Required"
+                <flux:select wire:model="selected_district" label="District" badge="Optional"
                     placeholder="Choose District...">
                     @foreach ($districts as $district_id => $district_name)
                         <flux:select.option value="{{ $district_id }}">{{ $district_name }}
@@ -154,10 +154,10 @@
                     @endforeach
                 </flux:select>
 
-                <flux:input wire:model="customer_city" label="City" placeholder="City" badge="Required" />
+                <flux:input wire:model="customer_city" label="City" placeholder="City" badge="Optional" />
                 <flux:input type='number' wire:model="customer_pincode" label="Pincode" placeholder="Pincode"
-                    badge="Required" />
-                <flux:textarea wire:model="customer_address" label="Address" placeholder="Enter address here..." />
+                    badge="Optional" />
+                <flux:textarea wire:model="customer_address" label="Address" placeholder="Enter address here..." badge="Optional" />
             </flux:card>
         </div>
     </div>

@@ -91,7 +91,7 @@ class CreateOrder extends Component
         $customer = Customer::with(['addresses'])->firstWhere('mobile', $value);
         if ($customer) {
             $this->name = $customer->name;
-            $this->email = $customer->email;
+            $this->email = $customer->email ? $customer->email : "";
             $this->gender = $customer->gender;
 
             $address = $customer->addresses->first();
@@ -275,11 +275,11 @@ class CreateOrder extends Component
         if ($this->selected_state && $this->selected_district && $this->customer_address && $this->customer_city && $this->customer_pincode) {
             $customer->addresses()->create(
                 [
-                    'state_id' => $this->selected_state,
-                    'district_id' => $this->selected_district,
-                    'address' => $this->customer_address,
-                    'city' => $this->customer_city,
-                    'pin_code' => $this->customer_pincode,
+                    'state_id' => $this->selected_state ?? '',
+                    'district_id' => $this->selected_district ?? '',
+                    'address' => $this->customer_address ?? "",
+                    'city' => $this->customer_city ?? "",
+                    'pin_code' => $this->customer_pincode ?? "",
                 ]
             );
         }
